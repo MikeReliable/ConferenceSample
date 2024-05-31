@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="https://www.thymeleaf.org" lang="en">
+<div th:replace="parts/header :: header"></div>
+
+<body>
+<div th:replace="parts/navbarAdmin :: navbarAdmin"></div>
+<h1 id="list-item-1">h</h1>
+<div class="container-xl my-5">
+    <div class="d-inline-flex p-2 bd-highlight border rounded-3">
+        <h5>Маркировка докладчика:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</h5>
+        <p class="text-danger">КРАСНЫЙ - пленарные;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</p>
+        <p class="text-warning">ЖЕЛТЫЙ - приглашенные;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</p>
+        <p class="text-success">ЗЕЛЕНЫЙ - секционные;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</p>
+        <p class="text-primary">СИНИЙ - постерные.</p>
+    </div>
+    <h3 class="text-center my-3">Список докладчиков по разделам и алфавиту</h3>
+    <form th:unless="${editor}" th:action="@{addUser}">
+        <button type="submit" class="btn btn-outline-success border border-dark my-2" ><b>+ Добавить нового участника</b>
+    </button></form>
+    <div>
+        <h3>Пленарные докладчики</h3>
+        <table class="table table-bordered">
+            <thead class="table-secondary border border-danger">
+            <tr>
+                <td>#</td>
+                <td>Фамилия</td>
+                <td>Имя</td>
+                <td>Отчество</td>
+                <td>Степень</td>
+                <td>Должность</td>
+                <td>Аффилиация</td>
+                <td>Город</td>
+            </tr>
+            </thead>
+            <tbody class="border border-danger">
+            <tr th:each="user : ${plenaryList}" th:object="${user}">
+                <td></td>
+                <td th:text="*{lastName}"></td>
+                <td th:text="*{firstName}"></td>
+                <td th:text="*{middleName}"></td>
+                <td th:text="*{degree}"></td>
+                <td th:text="*{position}"></td>
+                <td th:text="*{affiliation.organizationShort}"></td>
+                <td th:text="*{affiliation.getCity()}"></td>
+                <td><a th:unless="${editor}" type="button" class="btn btn-link btn-sm" th:href="'/admin/adminRedUser/' + *{id}">Edit</a></td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <div>
+        <h3>Секционные докладчики</h3>
+        <div th:each="section : ${sections}">
+            <h5><span th:text="${section.section}"></span></h5>
+
+            <table class="table table-bordered">
+                <thead class="table-secondary border border-warning">
+                <tr>
+                    <td>#</td>
+                    <td>Фамилия</td>
+                    <td>Имя</td>
+                    <td>Отчество</td>
+                    <td>Степень</td>
+                    <td>Должность</td>
+                    <td>Аффилиация</td>
+                    <td>Город</td>
+                </tr>
+                </thead>
+
+                <tbody class="border border-warning">
+                <div th:each="publication : ${allPublications}" th:object="${publication}">
+                    <div th:if="${section.section.equals(publication.getSectionName())}">
+                        <div th:if="*{presentationType.equals('Приглашенный')}">
+                            <tr>
+                                <td></td>
+                                <td th:text="*{getUser().lastName}"></td>
+                                <td th:text="*{getUser().firstName}"></td>
+                                <td th:text="*{getUser().middleName}"></td>
+                                <td th:text="*{getUser().degree}"></td>
+                                <td th:text="*{getUser().position}"></td>
+                                <td th:text="*{getUser().affiliation.getOrganizationShort()}"></td>
+                                <td th:text="*{getUser().affiliation.getCity()}"></td>
+                                <td><a th:unless="${editor}" type="button" class="btn btn-link btn-sm" th:href="'/admin/adminRedUser/' + *{user.id}">Edit</a></td>
+                            </tr>
+                        </div>
+                    </div>
+                </div>
+                </tbody>
+                <tbody class="border border-success">
+                <div th:each="publication : ${allPublications}" th:object="${publication}">
+                    <div th:if="${section.section.equals(publication.getSectionName())}">
+                        <div th:if="*{presentationType.equals('Секционный')}">
+                            <tr>
+                                <td></td>
+                                <td th:text="*{getUser().lastName}"></td>
+                                <td th:text="*{getUser().firstName}"></td>
+                                <td th:text="*{getUser().middleName}"></td>
+                                <td th:text="*{getUser().degree}"></td>
+                                <td th:text="*{getUser().position}"></td>
+                                <td th:text="*{getUser().affiliation.getOrganizationShort()}"></td>
+                                <td th:text="*{getUser().affiliation.getCity()}"></td>
+                                <td><a th:unless="${editor}" type="button" class="btn btn-link btn-sm" th:href="'/admin/adminRedUser/' + *{user.id}">Edit</a></td>
+                            </tr>
+                        </div>
+                    </div>
+                </div>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <div>
+        <h3>Постерные докладчики</h3>
+        <table class="table table-bordered border-primary">
+            <thead class="table-secondary border border-primary">
+            <tr>
+                <td>#</td>
+                <td>Фамилия</td>
+                <td>Имя</td>
+                <td>Отчество</td>
+                <td>Степень</td>
+                <td>Должность</td>
+                <td>Аффилиация</td>
+                <td>Город</td>
+            </tr>
+            </thead>
+            <tbody>
+            <div th:each="publication : ${allPublications}" th:object="${publication}">
+                <div th:if="*{presentationType.equals('Постерный')}">
+                    <tr>
+                        <td></td>
+                        <td th:text="*{getUser().lastName}"></td>
+                        <td th:text="*{getUser().firstName}"></td>
+                        <td th:text="*{getUser().middleName}"></td>
+                        <td th:text="*{getUser().degree}"></td>
+                        <td th:text="*{getUser().position}"></td>
+                        <td th:text="*{getUser().affiliation.getOrganizationShort()}"></td>
+                        <td th:text="*{getUser().affiliation.getCity()}"></td>
+                        <td><a th:unless="${editor}" type="button" class="btn btn-link btn-sm" th:href="'/admin/adminRedUser/' + *{user.id}">Edit</a></td>
+                    </tr>
+                </div>
+            </div>
+            </tbody>
+        </table>
+    </div>
+</div>
+<script src="/static/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

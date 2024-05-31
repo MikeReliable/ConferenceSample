@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="https://www.thymeleaf.org" lang="en">
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+<div th:replace="parts/header :: header"></div>
+
+<body>
+<div th:replace="parts/navbarAdmin :: navbarAdmin"></div>
+<h1 id="list-item-1">h</h1>
+<div class="container-xl my-5">
+    <div class="alert alert-success" role="alert" th:if="${messageOk != null}"
+         th:text="${messageOk}"></div>
+    <div class="alert alert-danger" role="alert" th:if="${message != null}"
+         th:text="${message}"></div>
+
+    <h3 class="text-center my-3">Список участников, загрузивших дополнение к договору</h3>
+    <ol>
+        <div th:each="contract : ${allUsersContracts}">
+            <div th:if="${contract.contractFilename != null}">
+                <li>
+                    <div class="btn-group" role="group">
+                        <form th:action="@{/admin/usersContractsExtraAccept}" method="post"
+                              enctype="multipart/form-data">
+                            <input type="hidden" th:name="conrtactId"
+                                   th:value="${contract.id}"/>
+                            <div class="btn-group" role="group">
+                                <label th:if="${contract.invoiceFilename == null}" class="input-group-text"
+                                       for="userContractInvoiceLoad">
+                                    Доп.соглашение скан</label>
+                                <input th:if="${contract.invoiceFilename == null}" type="file" class="form-control"
+                                       id="userContractInvoiceLoad" accept=".pdf, .doc, .docx" name="file"
+                                       aria-describedby="userContractInvoiceLoad" aria-label="Upload">
+                                <button th:if="${contract.invoiceFilename == null}" class="btn btn-primary load btn-sm">
+                                    Отправить
+                                </button>
+                                <a th:if="${contract.invoiceFilename != null}" th:download="${contract.invoiceFilename}"
+                                   th:href="@{|/userInvoiceExtraGet?id=${contract.getId()}|}">
+                                    <span th:text="${'Скачать скан доп.соглашения'}"></span>
+                                </a>
+                            </div>
+                        </form>
+
+                        <form th:if="${contract.invoiceFilename != null}" th:action="@{/admin/userInvoiceExtraDelete}"
+                              method="post" name="id" th:value="${contract.id}">
+                            <a class="btn btn-outline-danger btn-sm ms-1 me-3" data-bs-toggle="modal"
+                               th:data-bs-target="${'#userInvoiceExtraDelete' + contract.id}">
+                                Удалить
+                            </a>
+
+                            <!-- Modal -->
+                            <div class="modal fade"
+                                 th:id="${'userInvoiceExtraDelete' + contract.id}"
+                                 tabindex="-1" role="dialog" aria-labelledby="deleteModalUserContractExtraInvoice"
+                                 aria-hidden="true">
+                                <div class="modal-dialog">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title" id="deleteModalUserContractExtraInvoice">Подтвердите
+                                                удаление скана доп.соглашения</h5>
+                                            <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                                    aria-label="Close"></button>
+                                        </div>
+                                        <div class="modal-body">
+                                            <div>
+                                                <input type="hidden" th:value="${contract.id}"
+                                                       name="id"/>
+                                                <label th:for="id" class="form-check-label"
+                                                       th:text="${'Доп.соглашение скан' + contract.invoiceFilename}">
+                                                </label>
+                                            </div>
+                                            <button type="submit" class="btn btn-outline-danger btn-sm">
+                                                Удалить
+                                            </button>
+                                            <input type="hidden" name="${_csrf.parameterName}"
+                                                   value="${_csrf.token}"/>
+                                            <div class="modal-footer"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+
+                    <span th:if="${contract.contractFilename !=null}">
+                    <a th:download="${contract.contractFilename}"
+                       th:href="@{|/userContractExtraGet?id=${contract.getId()}|}">
+                                    <span th:text="${contract.user.lastName + ' ' + contract.user.firstName + ' ' + contract.user.middleName}"></span>
+                     </a>
+                        <span th:if="${contract.invoiceFilename !=null}">
+                              , e-mail <a th:text="${contract.user.email}"
+                                          th:href="'mailto:' + ${contract.user.email} + '?subject=Международная конференция \'Физическая мезомеханика материалов\'. Оргвзнос'"></a>
+                        Тел. <span th:text="${contract.user.telephone}"></span>
+                        </span>
+                    </span>
+                    <a th:if="${contract.invoiceFilename == null}" type="button"
+                       class="btn btn-outline-secondary btn-sm ms-2"
+                       th:href="'/admin/adminReviewContractExtra/' + ${contract.user.id}">Ответить
+                    </a>
+                    <a th:if="${contract.invoiceFilename != null}" type="button"
+                       class="btn btn-outline-secondary btn-sm ms-2 disabled"
+                       th:href="'/admin/adminReviewContractExtra/' + ${contract.user.id}">Ответить
+                    </a>
+                </li>
+            </div>
+        </div>
+    </ol>
+</div>
+<script src="/static/js/bootstrap.bundle.min.js"></script>
+<script>
+    $('.btn.btn-primary.load').click(function () {
+        $(this).html('<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Загрузка...')
+    });
+</script>
+</body>
+</html>

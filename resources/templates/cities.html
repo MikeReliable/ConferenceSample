@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="https://www.thymeleaf.org" lang="en">
+<div th:replace="parts/header :: header"></div>
+
+<body>
+<div th:replace="parts/navbarAdmin :: navbarAdmin"></div>
+<h1 id="list-item-1">h</h1>
+<div class="container-xl my-5">
+
+    <h3 class="my-3">Статистика конференции по городам</h3>
+    <p>Участников зарегистрировано всего: <span th:text="${usersCountCurrent}"></span></p>
+    <p>Городов участвует: <span th:text="${cityCountCurrent}"></span></p>
+    <p>Из них:</p>
+    <ol>
+        <div th:each="city : ${citiesCurrent}">
+            <script type="text/javascript">
+                var count = 0;
+                var people = 0;
+                var poster = 0;
+            </script>
+            <div th:each="user : ${allUsers}">
+                <div th:if="${user.affiliation!=null}">
+                    <div th:if="${user.affiliation.getCity().equals(city)}">
+                        <script type="text/javascript">
+                            people++;
+                        </script>
+                    </div>
+                </div>
+            </div>
+            <div th:each="publication : ${allPublications}">
+                <div th:if="${publication.user.affiliation.city.equals(city)}">
+                    <script type="text/javascript">
+                        count++;
+                    </script>
+                    <div th:if="${publication.getPresentationType().toString().equals('Постерный') && publication.user.affiliation.city.equals(city)}">
+                        <script type="text/javascript">
+                            poster++;
+                        </script>
+                    </div>
+                </div>
+            </div>
+            <li><span th:text="${city}"></span> -
+                <script>document.write(people)</script>
+                докладчик(а/ов), с
+                <script>document.write(count)</script>
+                докладами, из них
+                <script>document.write(poster)</script>
+                постерные
+            </li>
+        </div>
+    </ol>
+</div>
+<script src="/static/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="https://www.thymeleaf.org" lang="en">
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+<div th:replace="parts/header :: header"></div>
+
+<body>
+<div th:replace="parts/navbarAdmin :: navbarAdmin"></div>
+<h1 id="list-item-1">h</h1>
+<div class="container-xl my-5">
+
+    <h3 class="text-center my-3">Написать участнику</h3>
+
+    <div class="alert alert-success" role="alert" th:if="${messageOk != null}"
+         th:text="${messageOk}"></div>
+    <div class="alert alert-danger" role="alert" th:if="${message != null}"
+         th:text="${message}"></div>
+    <form th:action="@{'/admin/adminReviewContractExtra/' + ${user.id}}" th:object="${user}"
+          method="post">
+        <div>
+        <span class="input-group-text my-2"
+              th:text="${user.lastName} + ' ' + ${user.firstName} + ' ' + ${user.middleName}+ ', e-mail: ' + ${user.username} + ', тел: ' + ${user.telephone}">
+            Поле ввода текста письма</span>
+            <textarea class="form-control" aria-label="Поле ввода текста письма" name="textField" id="textField"
+                      rows="15" placeholder="Введите замечания по оформлению договора и нажмите отправить"></textarea>
+        </div>
+        <button type="submit" class="btn btn-primary load btn-sm"> Отправить
+        </button>
+    </form>
+</div>
+
+<script src="/static/js/bootstrap.bundle.min.js"></script>
+<script>
+    $('.btn.btn-primary.load').click(function () {
+        $(this).html('<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Загрузка...')
+    });
+</script>
+</body>
+</html>

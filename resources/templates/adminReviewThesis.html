@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="https://www.thymeleaf.org" lang="en">
+<div th:replace="parts/headerScript :: header"></div>
+
+<body>
+<div th:replace="parts/navbarAdmin :: navbarAdmin"></div>
+<h1 id="list-item-1">h</h1>
+<div class="container-xl my-5">
+
+    <h3 class="text-center my-3">Список тезисов по разделам и алфавиту</h3>
+
+    <div>
+        <div th:each="section : ${sections}">
+            <h5>Секция: <span th:text="${section.section}"></span></h5>
+            <ol>
+                <div th:each="publication : ${allPublications}" th:object="${publication}">
+                    <div th:unless="${publication.filename==null}">
+                        <div th:if="${section.section.equals(publication.getSectionName())}">
+                            <li class="border border-primary-subtle rounded  my-2 p-2">
+                                <form th:action="@{/admin/adminReviewThesisAccept}" th:object="${publication}"
+                                      method="post">
+                                    <input type="hidden" th:name="publicationId"
+                                           th:value="${publication.publicationId}"/>
+                                    <button th:if="*{acceptThesis==false}" type="submit"
+                                            class="btn btn-primary btn-sm"> Принять
+                                    </button>
+                                    <button th:if="*{acceptThesis==true}" type="button"
+                                            class="btn btn-secondary btn-sm" disabled> Принять
+                                    </button>
+                                    <a th:if="*{acceptThesis==false}" type="button"
+                                       class="btn btn-outline-secondary btn-sm"
+                                       th:href="'/admin/adminReviewThesis/' + *{publicationId}"> Написать автору
+                                    </a>
+                                    <a th:if="*{acceptThesis==true}" type="button"
+                                       class="btn btn-outline-secondary btn-sm disabled"
+                                       th:href="'/admin/adminReviewThesis/' + *{publicationId}"> Написать автору
+                                    </a>
+                                    <span th:if="${publication.filename==null}">
+                                        <span th:text="${publication.user.lastName}"></span>
+                                        <span th:text="${publication.user.firstName.substring(0, 1)} + '.'"></span>
+                                        <span th:unless="${publication.user.middleName.isEmpty()}"
+                                              th:text="${publication.user.middleName.substring(0, 1)} + '.'"></span>
+                                    <span th:text="${publication.publicationName}"></span>
+                                    </span>
+                                    <span th:unless="${publication.filename==null}">
+                                        <a th:download="${publication.filename}"
+                                           th:href="@{|/publicationGet?id=${publication.publicationId}|}">
+                                        <span th:text="${publication.user.lastName}"></span>
+                                        <span th:text="${publication.user.firstName.substring(0, 1)} + '.'"></span>
+                                        <span th:unless="${publication.user.middleName.isEmpty()}"
+                                              th:text="${publication.user.middleName.substring(0, 1)} + '.'"></span>
+                                        <span th:text="${publication.publicationName}"></span>
+                                        </a>
+                                    </span>
+                                </form>
+                                <form th:action="@{/admin/adminReviewThesisAcceptPermission}" th:object="${publication}"
+                                      method="post">
+                                    <input type="hidden" th:name="publicationId"
+                                           th:value="${publication.publicationId}"/>
+                                    <button th:if="*{acceptThesis==false}" type="submit"
+                                            class="btn btn-outline-primary load btn-sm my-1"> Принять без
+                                        разрешения на публикацию
+                                    </button>
+                                    <button th:if="*{acceptThesis==true}" type="submit"
+                                            class="btn btn-outline-secondary load btn-sm my-1" disabled> Принять без
+                                        разрешения на публикацию
+                                    </button>
+                                    <a type="button" class="btn btn-outline-primary btn-sm"
+                                       th:download="${publication.permission}"
+                                       th:href="@{|/permissionGet?id=${publication.publicationId}|}"> Скачать разрешение на публикацию
+                                    </a>
+                                </form>
+                            </li>
+                        </div>
+                    </div>
+                </div>
+            </ol>
+        </div>
+    </div>
+</div>
+<script src="/static/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

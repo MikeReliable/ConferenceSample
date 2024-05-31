@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="https://www.thymeleaf.org" lang="en">
+<div th:replace="parts/headerScript :: header"></div>
+
+<body>
+<div th:replace="parts/navbar :: navbar"></div>
+<h1 id="list-item-1">h</h1>
+<div class="container-xl my-5">
+    <h4>ДОБАВЛЕНИЕ НОВОЙ АФФИЛИАЦИИ</h4>
+    <h5 class="col-form-label mt-3">Правила добавления</h5>
+    <p class="col-form-label"> Перед заполнением новой аффилиации убедитесь в том, что она точно отсутствует в
+        списке.<br>
+        В случае, если по вашему мнению, для существующей организации необходимо внести изменения в написании, не нужно
+        добавлять ее еще раз. Напишите ваши пожелания
+        <a href="mailto:meso@ispms.ru?subject=Физическая мезомеханика">секретарю конференции</a>, а в
+        настоящий момент воспользуйтесь предложенным системой вариантом.<br>
+    </p>
+    <p class="col-form-label"> Для проверки начните заполнять полное наименование вашей организации в окне ниже, при
+        наличии вашей организации в базе, система автоматически выдаст ее в списке.
+    </p>
+    <div class="my-2 text-center" id="text" style="color: #011f9b; font-weight: bold;"></div>
+    <div class="row row-cols-1">
+        <label for="organizationFull"></label>
+        <input id="organizationFull"
+               placeholder="Для поиска начните вводить название организации, например: Томский государ... "/>
+    </div>
+    <div class="row row-cols-3">
+        <div class="form-group row col-4">
+            <label for="organizationShort" class="col-form-label"> Короткое название организации : </label>
+            <input type="text" id="organizationShort"/>
+        </div>
+        <div class="form-group row col-4 mx-2">
+            <label for="city" class="col-form-label"> Город : </label>
+            <input type="text" id="city"/>
+        </div>
+        <div class="form-group row col-4">
+            <label for="country" class="col-form-label"> Страна : </label>
+            <input type="text" id="country"/>
+        </div>
+    </div>
+    <h4 class="text-center my-3">Внести новую аффилиацию</h4>
+    <p class="col-form-label"> Если ваша организация отсутствует в базе данных, заполните соответствующие поля
+        формы, используя данные раздела Контакты официальной страницы вашей организации.
+    </p>
+    <div class="alert alert-success" role="alert" th:if="${messageOk != null}"
+         th:text="${messageOk}"></div>
+    <div class="alert alert-danger" role="alert" th:if="${message != null}"
+         th:text="${message}"></div>
+
+    <form action="#" th:action="@{/affiliation}" th:object="${affiliation}" th:method="post" class="needs-validation">
+        <div class="row row-cols-1">
+            <label for="organizationFullNew" class="col-form-label"> Полное название организации* : </label>
+            <input th:class="${!#fields.hasErrors('organizationFull')} ? 'form-control border border-secondary' : 'form-control is-invalid'"
+                   th:field="*{organizationFull}" type="text" name="organizationFull" id="organizationFullNew"/>
+            <div class="invalid-feedback" th:if="${#fields.hasErrors('organizationFull')}"
+                 th:errors="*{organizationFull}"></div>
+        </div>
+        <div class="row row-cols-3">
+            <div class="form-group row col-4">
+                <label for="organizationShortNew" class="col-form-label"> Короткое название организации* : </label>
+                <input th:class="${!#fields.hasErrors('organizationShort')} ? 'form-control border border-secondary' : 'form-control is-invalid'"
+                       th:field="*{organizationShort}" type="text" name="organizationShort" id="organizationShortNew"/>
+                <div class="invalid-feedback" th:if="${#fields.hasErrors('organizationShort')}"
+                     th:errors="*{organizationShort}"></div>
+            </div>
+            <div class="form-group row col-4 mx-2">
+                <label for="cityNew" class="col-form-label"> Город* : </label>
+                <input th:class="${!#fields.hasErrors('city')} ? 'form-control border border-secondary' : 'form-control is-invalid'"
+                       th:field="*{city}" type="text" name="city" id="cityNew"/>
+                <div class="invalid-feedback" th:if="${#fields.hasErrors('city')}"
+                     th:errors="*{city}"></div>
+            </div>
+            <div class="form-group row col-4">
+                <label for="countryNew" class="col-form-label"> Страна* : </label>
+                <input th:class="${!#fields.hasErrors('country')} ? 'form-control border border-secondary' : 'form-control is-invalid'"
+                       th:field="*{country}" type="text" name="country" id="countryNew"/>
+                <div class="invalid-feedback" th:if="${#fields.hasErrors('country')}"
+                     th:errors="*{country}"></div>
+            </div>
+        </div>
+        <div class="py-3"><input class="btn btn-primary" type="submit" value="Добавить"/></div>
+        <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
+    </form>
+</div>
+
+<script th:inline="javascript">
+    let jsonAffiliationSet = JSON.parse([[${jsonAffiliationSet}]]);
+    console.log(jsonAffiliationSet)
+</script>
+<script src="/static/js/bootstrap.bundle.min.js"></script>
+<script src="/static/js/script.js"></script>
+</body>
+</html>

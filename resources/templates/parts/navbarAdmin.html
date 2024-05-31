@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org" lang="en">
+<div th:replace="parts/header :: header"></div>
+
+<body>
+<div class="container-xl row">
+    <div th:fragment="navbarAdmin">
+
+        <nav class="navbar navbar-expand-lg navbar-light fixed-top" style="background-color: #4b96ad;">
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
+                    data-bs-target="#navbarToggleExternalContent" aria-controls="navbarToggleExternalContent"
+                    aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarToggleExternalContent">
+                <div class="container-xl">
+                    <div class="collapse-fluid navbar-collapse" id="navbarSupportedContent">
+                        <a class="navbar-brand mx-5" href="/admin/">Панель администратора</a>
+                        <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                            <li class="nav-item dropdown">
+                                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button"
+                                   data-bs-toggle="dropdown" aria-expanded="false">
+                                    Участники конференции
+                                </a>
+                                <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                                    <li><a class="dropdown-item" href="/admin/">Список докладчиков</a></li>
+                                    <li><a class="dropdown-item" href="/admin/usersNoPublication">Участники без
+                                        доклада</a></li>
+                                    <li><a class="dropdown-item" href="/admin/usersContracts">Оргвзносы</a></li>
+                                    <li><a th:if="${admin}" class="dropdown-item" href="/admin/usersById">Участники по ID</a></li>
+                                </ul>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link active" aria-current="page" href="/admin/fullProgram">Программа</a>
+                            </li>
+                            <li class="nav-item dropdown">
+                                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown1" role="button"
+                                   data-bs-toggle="dropdown" aria-expanded="false">
+                                    Статистика
+                                </a>
+                                <ul class="dropdown-menu" aria-labelledby="navbarDropdown1">
+                                    <li><a class="dropdown-item" href="/admin/statistics">Полная</a></li>
+                                    <li><a class="dropdown-item" href="/admin/cities">По городам</a></li>
+                                    <li><a class="dropdown-item" href="/admin/affiliation">Аффилиации</a></li>
+                                </ul>
+                            </li>
+                            <li class="nav-item dropdown">
+                                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown2" role="button"
+                                   data-bs-toggle="dropdown" aria-expanded="false">
+                                    Рецензирование
+                                </a>
+                                <ul class="dropdown-menu" aria-labelledby="navbarDropdown2">
+                                    <li><a class="dropdown-item" href="/admin/adminReviewThesis">Тезисы</a></li>
+                                    <li><a class="dropdown-item" href="/admin/adminReviewPaper">Статьи</a></li>
+                                </ul>
+                            </li>
+                            <li class="nav-item mx-4">
+                                <a class="nav-link" aria-current="page" href="/personal"><span class="badge bg-success">Личный кабинет</span></a>
+                            </li>
+                        </ul>
+                        <div class="d-flex">
+                            <div><b><span class="text-primary" th:text="${role}"></span></b></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </nav>
+    </div>
+</div>
+</body>
+</html>

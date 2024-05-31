@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="https://www.thymeleaf.org" lang="en">
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+<div th:replace="parts/header :: header"></div>
+
+<body>
+<div class="position-absolute top-50 start-50 translate-middle border border-3 border-primary rounded-3 px-3 py-3">
+    <a href="/">
+        <img src="/img/PhisicalMesomechanics.png" alt="meso2023" class="container text-center">
+    </a>
+    <div class="text-center fs-5 py-2">Вход в личный кабинет</div>
+    <div class="alert alert-success" role="alert" th:if="${messageOk != null}" th:text="${messageOk}"></div>
+    <div th:if="${param.error != null}" class="alert alert-danger py-2" role="alert">
+        Неверно введены E-mail или Пароль
+    </div>
+    <form action="#" th:action="@{/login}" method="post">
+        <div class="form-group row">
+            <div class="input-group col-sm-12">
+                <img src="/static/user.svg" alt="user_logo" class="input-group-text">
+                <input class="form-control" placeholder="E-mail" type="text" name="username" id="username"/>
+            </div>
+        </div>
+        <div class="form-group row py-2 password">
+            <div class="input-group col-sm-12">
+                <img src="/static/lock.svg" alt="user_logo" class="input-group-text">
+                <input class="form-control" placeholder="Пароль" type="password" name="password" id="password-input"/>
+                <a href="#" class="password-control">
+                    <img class="input-group-text" src="/static/eye.svg" alt="eye" id="input-group-text">
+                </a>
+            </div>
+        </div>
+        <div class="d-grid gap-2 d-md-block py-3">
+            <button class="btn btn-primary col-7" type="submit">Войти</button>
+            <a href="/passwordReset" class="link-primary mx-2">Забыли пароль?</a>
+        </div>
+        <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
+    </form>
+    <div class="text-md-center">
+        <a href="/registration" class="link-secondary">Зарегистрироваться</a>
+    </div>
+    <div class="text-md-center">
+        <a href="/" class="link-secondary">Вернуться в главное меню</a>
+    </div>
+</div>
+<script>
+    $('body').on('click', '.password-control', function () {
+        if ($('#password-input').attr('type') === 'password') {
+            $('#password-input').attr('type', 'text');
+            $('#input-group-text').attr('src', '/static/eye-slash.svg');
+        } else {
+            $('#password-input').attr('type', 'password');
+            $('#input-group-text').attr('src', '/static/eye.svg');
+        }
+        return false;
+    });
+</script>
+</body>
+</html>

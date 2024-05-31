@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="https://www.thymeleaf.org" lang="en">
+<div th:replace="parts/header :: header"></div>
+
+<body>
+<div th:replace="parts/navbar :: navbar"></div>
+
+<div class="container-xl">
+    <h1 id="program-list-item-1">Program page</h1>
+    <h4 class="py-3">ПРОГРАММА КОНФЕРЕНЦИИ</h4>
+    <div class="bg-light border border-2 rounded shadow p-3 mb-3 bg-body">
+        Программа конференции будет размещена за неделю до начала мероприятия
+    </div>
+    <div class="bg-light border border-2 rounded shadow p-3 mb-3 bg-body">
+        <ul class="list-group list-group-horizontal">
+            <li class="list-group-item border-0"><img class="my-4" src="/img/ISPMS40.png" width="165px" height="75px"
+                                                      alt="40 лет ИФПМ"></li>
+            <li class="list-group-item border-0">
+                <b>40-ЛЕТИЕ ИФПМ СО РАН</b></br>
+                <a href="http://www.ispms.ru/" target="_blank"> Институт физики прочности и материаловедения
+                    Сибирского отделения Российской академии наук (ИФПМ СО РАН)</a> создан в 1984 году и является одним
+                из ведущих в России научных учреждений в области материаловедения, разработки и создания новых
+                материалов, включая наноматериалы и изделия из них.</br>
+                <b>9 сентября в 14:00</b> в конгресс-центре «Рубин» будет проходить торжественное заседание Ученого
+                совета ИФПМ СО РАН, посвященное 40-летию института.
+            </li>
+        </ul>
+    </div>
+
+    <!--    <p><a href="/program/downloadСurrentProgram" download="Program_Mesomechanics_2023.pdf"-->
+    <!--          type="button" class="btn btn-outline-success shadow-lg p-2 mb-3 rounded"> Программа конференции «Физическая-->
+    <!--        мезомеханика 2023»</a></p>-->
+    <!--    <p>13 сентября (10:50-12:50) <b>Александр Михайлович КОРСУНСКИЙ</b><br>-->
+    <!--        <em>(доктор философии, Профессор Сколтеха, Профессор Оксфордского университета, главный редактор журнала-->
+    <!--            Materials & Design)</em><br>-->
+    <!--        представит краткий «крэш-курс» <a href="/program/downloadCrashCourse" download="AM_Korsunskiy_Crash_course.pdf">-->
+    <!--            «ИЕРАРХИЯ ОСТАТОЧНЫХ НАПРЯЖЕНИЙ И ТЕОРИЯ СОБСТВЕННЫХ ДЕФОРМАЦИЙ»</a>.<br>-->
+    <!--        Предлагаемый курс будет интересным и полезным не только для ученых и аспирантов, но и для учащихся бакалавриата-->
+    <!--        и магистратуры ВУЗов, только начинающих научную работу.</p>-->
+    <!--    <p><a href="/publications/culturalProgram" download="Kulturnaya_programma.pdf">Культурная программа-->
+    <!--        конференции</a></p>-->
+    <div th:if="${valid}">
+        <h4 class="my-3">ПЛЕНАРНЫЕ ДОКЛАДЫ</h4>
+        <div class="row row-cols-1 row-cols-md-4 g-4">
+            <div th:each="publication : ${plenaryList}">
+                <div class="card" style="width: 14rem;">
+                    <img th:if="${publication.user.foto == null}" src="/img/avatar.jpg" class="card-img-top"
+                         alt="Card image">
+                    <img th:unless="${publication.user.foto == null}"
+                         th:src="@{${'/photo/' + publication.user.foto.toString()}}"
+                         class="card-img-top" alt="Card image">
+                    <div class="card-body">
+                        <h5 class="card-title text-center"
+                            th:text="${publication.user.lastName + ' ' + publication.user.firstName + ' ' + publication.user.middleName}"></h5>
+                        <p class="card-title text-center fst-italic"
+                           th:text="${publication.user.degree + ', ' + publication.user.affiliation.organizationShort+ ', ' + publication.user.affiliation.city}"></p>
+                        <p class="card-text text-center" th:text="${publication.publicationName}"></p>
+                    </div>
+                    <div th:if="${adminSecretary}" class="card-footer">
+                        <form th:if="${publication.user.foto == null}" action="#"
+                              th:action="@{/program/plenaryFotoLoad}" method="post" enctype="multipart/form-data">
+                            <div class="col-auto custom-file">
+                                <input class="form-control" id="foto" type="file"
+                                       name="foto" accept=".jpeg, .jpg"/>
+                                <label class="custom-file-label" for="foto"></label>
+                            </div>
+                            <input class="btn btn-primary btn-sm my-1" type="submit" value="Загрузить фото 480х640"/>
+                            <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
+                            <label for="publicationId">
+                                <input type="hidden" id="publicationId" name="publicationId"
+                                       th:value="${publication.publicationId}"/>
+                            </label>
+                        </form>
+
+                        <form th:unless="${publication.user.foto == null}"
+                              th:action="@{/program/plenaryFotoDelete}" method="post"
+                              name="publicationId" th:value="${publication.publicationId}">
+                            <div class="text-center">
+                                <button type="button" class="btn btn-outline-danger btn-sm"
+                                        data-bs-toggle="modal"
+                                        th:data-bs-target="${'#plenaryFotoDelete' + publication.publicationId}">
+                                    Удалить фото
+                                </button>
+                            </div>
+                            <!--Modal-->
+                            <div class="modal fade"
+                                 th:id="${'plenaryFotoDelete' + publication.publicationId}"
+                                 tabindex="-1" role="dialog" aria-labelledby="plenaryFotoDelete"
+                                 aria-hidden="true">
+                                <div class="modal-dialog">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title" id="plenaryFotoDelete">Удалить фото?</h5>
+                                            <button type="button" class="btn-close"
+                                                    data-bs-dismiss="modal"
+                                                    aria-label="Close"></button>
+                                        </div>
+                                        <div class="modal-body">
+                                            <div>
+                                                <input type="hidden" th:value="${publication.publicationId}"
+                                                       name="publicationId"/>
+                                                <label th:for="publicationId" class="form-check-label"
+                                                       th:text="${publication.user.lastName + ' ' + publication.user.firstName}">
+                                                </label>
+                                            </div>
+                                            <button type="submit" class="btn btn-outline-danger btn-sm">
+                                                Удалить
+                                            </button>
+                                            <input type="hidden" name="${_csrf.parameterName}"
+                                                   value="${_csrf.token}"/>
+                                            <div class="modal-footer"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <h4 id="program-list-item-2" class="my-3"> УЧАСТНИКИ КОНФЕРЕНЦИИ</h4>
+
+    <table class="table table-sm table-success table-striped">
+        <thead class="table-warning">
+        <tr>
+            <td>&nbsp;&nbsp;&nbsp;Фамилия</td>
+            <td>Имя</td>
+            <td>Отчество</td>
+            <td>Организация</td>
+            <td>Город</td>
+            <!--            <td>Страна</td>-->
+        </tr>
+        </thead>
+
+        <tbody>
+        <tr th:each="user : ${users}" th:object="${user}">
+            <td th:text="*{lastName}"></td>
+            <td th:text="*{firstName}"></td>
+            <td th:text="*{middleName}"></td>
+            <td th:text="*{affiliation.getOrganizationShort()}"></td>
+            <td th:text="*{affiliation.getCity()}"></td>
+            <!--                    <td th:text="*{affiliation.getCountry()}"></td>-->
+        </tr>
+        </tbody>
+    </table>
+</div>
+<script src="/static/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

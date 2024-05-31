@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="https://www.thymeleaf.org" lang="en">
+<div th:replace="parts/header :: header"></div>
+
+<body>
+<div th:replace="parts/navbar :: navbar"></div>
+
+<div class="container-xl">
+    <h1>Posters page</h1>
+    <h4 class="my-3">ПОСТЕРЫ</h4>
+    <div class="row">
+        <ol>
+            <div th:each="publication : ${posterList}">
+                <li>
+                    <span class="fs-5"
+                          th:text="${publication.user.lastName + ' ' + publication.user.firstName + ' ' + publication.user.middleName}"></span>
+                    <span class="fst-italic"
+                          th:text="${publication.user.degree + ', ' + publication.user.affiliation.organizationShort+ ', ' + publication.user.affiliation.city}"></span>
+                    <a th:href="@{/poster/{id}(id = ${publication.publicationId})}" type="application/pdf"
+                       target="_blank">
+                        <span th:text="${publication.publicationName}"></span>
+                    </a>
+                </li>
+            </div>
+        </ol>
+
+        <!--            <div class="card" style="width: 25rem; height: 35rem;">-->
+        <!--                <iframe-->
+        <!--                        th:src="@{/thesis/{filename}(filename = ${publication.getPoster()})}"-->
+        <!--                        style="width: 25rem; height: 35rem;"-->
+        <!--                        type="application/pdf">-->
+        <!--                </iframe>-->
+        <!--                <div class="card-body">-->
+        <!--                    <h5 class="card-title text-center"-->
+        <!--                        th:text="${publication.user.lastName + ' ' + publication.user.firstName + ' ' + publication.user.middleName}"></h5>-->
+        <!--                    <p class="card-title text-center fst-italic"-->
+        <!--                       th:text="${publication.user.degree + ', ' + publication.user.affiliation.organizationShort+ ', ' + publication.user.affiliation.city}"></p>-->
+        <!--                    <p class="card-text text-center" th:text="${publication.publicationName}"></p>-->
+        <!--                </div>-->
+        <!--            </div>-->
+
+    </div>
+</div>
+<script src="/static/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

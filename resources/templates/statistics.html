@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="https://www.thymeleaf.org" lang="en">
+<div th:replace="parts/header :: header"></div>
+
+<body>
+<div th:replace="parts/navbarAdmin :: navbarAdmin"></div>
+<h1 id="list-item-1">h</h1>
+<div class="container-xl my-5">
+    <h3 class="my-3">Статистика конференции полная</h3>
+    <p>Участников зарегистрировано всего: <span th:text="${usersCount}"></span></p>
+    <p>- из них молодых ученых: <span th:text="${young}"></span></p>
+    <p>- городов : <span th:text="${cityCount}"></span></p>
+    <br>
+    <p>Участники текущей конференции всего: <span th:text="${usersCountCurrent}"></span></p>
+    <p>- из них молодых ученых: <span th:text="${youngCurrent}"></span></p>
+    <p>- городов : <span th:text="${cityCountCurrent}"></span></p>
+    <p>============================================</p>
+    <p> Докладов всего: <span th:text="${publicationCount}"></span>.</p>
+    <p> Из них:</p>
+    <p>- пленарных: <span th:text="${plenaryCount}"></span></p>
+    <p>- приглашенных: <span th:text="${invitedCount}"></span></p>
+    <p>- секционных: <span th:text="${sectionCount}"></span></p>
+    <p> - постерных: <span th:text="${posterCount}"></span></p>
+    <p> Докладов по секциям: </p>
+    <div th:each="section : ${sections}">
+        <script type="text/javascript">
+            var count = 0;
+        </script>
+        <div th:each="publication : ${allPublications}">
+            <div th:if="${publication.sectionName.equals(section.section)}">
+                <script type="text/javascript">
+                    count++;
+                </script>
+            </div>
+        </div>
+        <p> &emsp;&emsp;&emsp;<span th:text="${section.section}"></span> -
+            <script>document.write(count)</script>
+            доклада(ов)
+        </p>
+    </div>
+    <p>============================================</p>
+    <p> Загружено тезисов: <span th:text="${publicationsWithFile}"></span> / принято:
+        <span th:text="${publicationsAccept}"></span></p>
+    <p> Загружено статей: <span th:text="${paperCount}"></span> / принято: <span
+            th:text="${papersAccept}"></span></p>
+    <p>============================================</p>
+    <div th:unless="${editor}">
+        <h5 class="my-3">Список администраторов</h5>
+        <div th:each="user : ${adminList}">
+            <p th:text="${user.getLastName() +' ' + user.getFirstName()}"></p>
+        </div>
+        <h5 class="my-3">Список секрeтарей</h5>
+        <div th:each="user : ${secretaryList}">
+            <p th:text="${user.getLastName() +' ' + user.getFirstName()}"></p>
+        </div>
+        <h5 class="my-3">Список рецензентов</h5>
+        <div th:each="user : ${editorList}">
+            <p th:text="${user.getLastName() +' ' + user.getFirstName()}"></p>
+        </div>
+        <h5 class="my-3">Договора и финансы</h5>
+        <div th:each="user : ${financierList}">
+            <p th:text="${user.getLastName() +' ' + user.getFirstName()}"></p>
+        </div>
+    </div>
+
+</div>
+<script src="/static/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

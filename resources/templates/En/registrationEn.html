@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="https://www.thymeleaf.org" lang="en">
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+<div th:replace="parts/headerEn :: headerEn"></div>
+
+<body>
+<div th:replace="parts/navbarEn :: navbarEn"></div>
+
+<h1 id="registration-list-item-En-1">h</h1>
+<div class="container-xl py-2">
+    <h4>REGISTRATION</h4>
+    <div class="alert alert-danger" role="alert" th:if="${message != null}" th:text="${message}"></div>
+    <div class="alert alert-success" role="alert" th:if="${messageOk != null}" th:text="${messageOk}"></div>
+    <form th:action="@{/En/registrationEn}" th:method="post" class="needs-validation">
+        <div class="container">
+            <div class="row row-cols-2">
+                <div class="form-group row">
+                    <label class="col-form-label"> First Name* : </label>
+                    <div class="col-sm-10">
+                        <input th:class="${!#fields.hasErrors('user.firstName')} ? 'form-control' : 'form-control is-invalid'"
+                               placeholder="Enter First Name" th:field="${user.firstName}" type="text"
+                               name="firstName"
+                               id="firstName"/>
+                    </div>
+                </div>
+
+                <div class="form-group row">
+                    <label class="col-form-label"> Last Name* : </label>
+                    <div class="col-sm-10">
+                        <input th:class="${!#fields.hasErrors('user.lastName')} ? 'form-control' : 'form-control is-invalid'"
+                               placeholder="Enter Last Name" th:field="${user.lastName}" type="text"
+                               name="lastName"
+                               id="lastName"/>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row row-cols-2">
+                <div class="form-group row">
+                    <label class="col-form-label"> E-mail* : </label>
+                    <div class="col-sm-10">
+                        <input th:class="${!#fields.hasErrors('user.email')} ? 'form-control' : 'form-control is-invalid'"
+                               placeholder="Enter E-mail" th:field="${user.email}" type="text" name="email"
+                               id="email"/>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-group row">
+                <div class="col-sm-10">
+                    <input type="hidden"
+                           th:class="${!#fields.hasErrors('user.password')} ? 'form-control' : 'form-control is-invalid'"
+                           placeholder="Insert password" th:value="${'Default01'}" name="password" id="password"/>
+                </div>
+            </div>
+
+            <div class="row row-cols-1">
+                <div class="form-group">
+                    <label class="col-form-label"> Report title* : </label>
+                    <div class="col-sm-10">
+                        <input th:class="${!#fields.hasErrors('publication.publicationName')} ? 'form-control' : 'form-control is-invalid'"
+                               placeholder="Enter the title of the report"
+                               th:field="${publication.publicationName}"
+                               type="text" name="publicationName"
+                               id="publicationName"/>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row row-cols-1">
+                <div class="form-group">
+                    <label class="col-form-label"> Section* : </label>
+                    <div class="col-sm-10">
+                        <select class="form-select" name="section" field="${section}">
+                            <option value="0">Select section</option>
+                            <option value="1">1. Physical mesomechanics of materials and structurally inhomogeneous
+                                media
+                            </option>
+                            <option value="2">2. Physics of plasticity and strength of materials
+                            </option>
+                            <option value="3">3. Simulation of the behavior of materials at various scales and computer
+                                design
+                            </option>
+                            <option value="4">4. Development of promising structural and functional materials, advanced
+                                technologies for their production
+                            </option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-group row">
+                <div class="col-sm-10">
+                    <input th:class="${!#fields.hasErrors('affiliation.organizationFull')} ? 'form-control' : 'form-control is-invalid'"
+                           placeholder="Enter organization name"
+                           th:value="${'Default'}"
+                           type="hidden" name="organizationFull"
+                           id="organizationFull"/>
+                </div>
+
+                <div class="row row-cols-1">
+                    <div class="form-group">
+                        <label class="col-form-label"> Organisation* : </label>
+                        <div class="col-sm-10">
+                            <input th:class="${!#fields.hasErrors('affiliation.organizationShort')} ? 'form-control' : 'form-control is-invalid'"
+                                   placeholder="Enter organization name"
+                                   th:field="${affiliation.organizationShort}"
+                                   type="text" name="organizationShort"
+                                   id="organizationShort"/>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row row-cols-2">
+                    <div class="form-group row">
+                        <label class="col-form-label"> City* : </label>
+                        <div class="col-sm-10">
+                            <input th:class="${!#fields.hasErrors('affiliation.city')} ? 'form-control' : 'form-control is-invalid'"
+                                   placeholder="Enter city"
+                                   th:field="${affiliation.city}"
+                                   type="text" name="city" id="city"/>
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label class="col-form-label"> Country* : </label>
+                        <div class="col-sm-10">
+                            <input th:class="${!#fields.hasErrors('affiliation.country')} ? 'form-control' : 'form-control is-invalid'"
+                                   placeholder="Enter country"
+                                   th:field="${affiliation.country}"
+                                   type="text" name="country" id="country"/>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row row-cols-2">
+                    <div class="form-group row">
+                        <label class="col-form-label"> Degree: </label>
+                        <div class="col-sm-10">
+                            <input class="form-control" placeholder="Enter degree" th:field="${user.degree}"
+                                   type="text" name="degree" id="degree"/>
+                        </div>
+                    </div>
+
+                    <div class="form-group row">
+                        <label class="col-form-label"> Phone: </label>
+                        <div class="col-sm-10">
+                            <input class="form-control" placeholder="Enter contact phone number"
+                                   th:field="${user.telephone}"
+                                   type="text" name="telephone" id="telephone"/>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group row">
+                    <label class="col-form-label"> Young scientist: </label>
+                    <div class="col-sm-5">
+                        <input class="form-check-input" type="checkbox" id="young" th:field="${user.young}">
+                        <label class="form-check-label" for="young"> Yes</label>
+                    </div>
+                </div>
+                <label class="col-form-label"> *Required fields</label>
+            </div>
+            <button class="btn btn-primary load" type="submit">Register</button>
+<!--            <label class="form-check-label"> Registration will open later</label>-->
+            <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
+        </div>
+    </form>
+</div>
+<script src="/static/js/bootstrap.bundle.min.js"></script>
+<script>
+    $('.btn.btn-primary.load').click(function () {
+        $(this).html('<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Loading...')
+    });
+</script>
+</body>
+</html>

@@ -1,0 +1,1122 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="https://www.thymeleaf.org" lang="en">
+<div th:replace="parts/headerScript :: header"></div>
+
+<body>
+<div th:replace="parts/navbar :: navbar"></div>
+
+<h1>personal page</h1>
+<div class="container-xl my-3">
+    <div class="alert alert-success" role="alert" th:if="${messageOk != null}"
+         th:text="${messageOk}"></div>
+    <div class="alert alert-danger" role="alert" th:if="${message != null}"
+         th:text="${message}"></div>
+
+    <!-- Кнопка-триггер модального окна -->
+    <button type="button" class="btn btn-primary visually-hidden" data-bs-toggle="modal"
+            data-bs-target="#staticBackdrop" id="modalButton">
+        Невидимая кнопка запуска модального окна
+    </button>
+
+    <!-- Модальное окно -->
+    <div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+         aria-labelledby="staticBackdropLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="staticBackdropLabel">Подтверждение участия в конференции</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Закрыть"></button>
+                </div>
+                <div class="modal-body">
+                    <img src="/img/ifpm.jpg" class="d-block w-100" style="opacity: 0.85" alt="ISPMS"/>
+                    <h5><b>Уважаемый <span th:text="${user.firstName} + ' ' + ${user.middleName}"></span></b>,
+                        оргкомитет Конференции приветствует Вас на нашем сайте и рад,
+                        что Вы решили присоединиться к нашему мероприятию в <span th:text="${actualYear}"></span> году!
+                    </h5>
+                </div>
+                <div class="modal-footer">
+                    <form action="#" th:action="@{/logout}" method="post">
+                        <button class="btn btn-secondary" data-bs-dismiss="modal" type="submit">Нет, спасибо
+                        </button>
+                    </form>
+                    <form action="#" th:action="@{/setActualYear}" method="post">
+                        <button class="btn btn-primary" data-bs-dismiss="modal" type="submit">Конечно, с удовольствием!
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="accordion" id="accordionExample">
+
+        <div class="accordion-item">
+            <h2 class="accordion-header" id="headingOne">
+                <button class="accordion-button" type="button" data-bs-toggle="collapse"
+                        data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+                    <img src="/static/file-earmark-font.svg" alt="thesis"/>
+                    <h3>&nbsp;&nbsp;&nbsp;Мои тезисы</h3>
+                </button>
+            </h2>
+            <div id="collapseOne" class="accordion-collapse collapse show" aria-labelledby="headingOne"
+                 data-bs-parent="#accordionExample">
+                <div class="accordion-body">
+                    <a th:class="${user.actualYear==actualYear} ? 'btn btn-primary my-3' : 'btn btn-secondary my-3 disabled'"
+                       aria-current="page" th:href="'/' + ${user.id} + '/thesisAdd'" aria-disabled="true">
+                        ДОБАВИТЬ
+                    </a>
+                    <!--                    <label class="col-form-label mx-2"> Прием тезисов будет доступен позже</label>-->
+                    <div th:fragment="thesis">
+                        <div th:unless="${publicationList.isEmpty()}" class="d-inline-flex bd-highlight">
+                            <h5>Состояние тезисов:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</h5>
+                            <p class="text-secondary">
+                                <img src="/static/envelope-exclamation.svg" width="24" height="24" alt="thesis"/> - на
+                                проверке;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                            </p>
+                            <p class="text-primary">
+                                <img src="/static/envelope-check.svg" width="24" height="24" alt="thesis"/> - принято
+                            </p>
+                        </div>
+                        <ol>
+                            <div class="my-3" th:each="public : ${publicationList}">
+                                <li>
+                                    <span th:if="${public.acceptThesis}"
+                                          data-bs-toggle="tooltip" data-bs-placement="top"
+                                          data-bs-title="Тезисы приняты">
+                                    <img src="/static/envelope-check.svg" width="24" height="24" alt="thesis"/>
+                                          <b><span th:text="${public.publicationName}"></span></b><br></span>
+                                    <span th:unless="${public.acceptThesis}"
+                                          data-bs-toggle="tooltip" data-bs-placement="top"
+                                          data-bs-title="Тезисы на проверке">
+                                    <img src="/static/envelope-exclamation.svg" width="24" height="24" alt="thesis"/>
+                                    <b><span th:text="${public.publicationName}"></span></b><br></span>
+                                    <span th:each="coauthor : ${public.getPublicationCoauthorsDTOList()}">
+                                   <span th:fragment="coauthor">
+                                    <span th:unless="${coauthor.doubleCoautor}">
+                                    <span th:if="${coauthor.speaker}">
+                                    <u>
+                                        <span th:if="${coauthor.place == 0}" th:text="${coauthor.getLastName()}"></span>
+                                        <span th:unless="${coauthor.place == 0}"
+                                              th:text="', ' + ${coauthor.getLastName()}"></span>
+                                        <span th:text="${coauthor.getFirstName().substring(0, 1)} + '.'"></span>
+                                        <span th:unless="${coauthor.getMiddleName().isEmpty()}"
+                                              th:text="${coauthor.getMiddleName().substring(0, 1)} + '.'"></span>
+                                        <sup th:unless="${coauthor.num ==0}">
+                                              <span th:text="${coauthor.num}"></span>
+                                        </sup>
+                                    </u>
+                                    </span>
+                                        <span th:unless="${coauthor.speaker}">
+                                        <span th:if="${coauthor.place == 0}" th:text="${coauthor.getLastName()}"></span>
+                                        <span th:unless="${coauthor.place == 0}"
+                                              th:text="', ' + ${coauthor.getLastName()}"></span>
+                                        <span th:text="${coauthor.getFirstName().substring(0, 1)} + '.'"></span>
+                                        <span th:unless="${coauthor.getMiddleName().isEmpty()}"
+                                              th:text="${coauthor.getMiddleName().substring(0, 1)} + '.'"></span>
+                                            <sup th:unless="${coauthor.num ==0}">
+                                              <span th:text="${coauthor.num}"></span>
+                                            </sup>
+                                    </span>
+                                    </span>
+                                     <span th:if="${coauthor.doubleCoautor}">
+                                          <sup th:unless="${coauthor.num ==0}">
+                                              <span th:text="', ' + ${coauthor.num}"></span>
+                                          </sup>
+                                     </span>
+                                    </span>
+                                    </span><br>
+                                    <span th:fragment="affiliation">
+                                    <span th:text="'('"></span>
+                                    <span th:each="coauthor : ${public.getPublicationCoauthorsDTOList()}">
+                                        <span th:unless="${coauthor.organizationShort.equals('')}">
+                                            <span th:unless="${coauthor.num==0 || coauthor.num==1}"
+                                                  th:text="${','}"></span>
+                                            <sup th:unless="${coauthor.num ==0}">
+                                               <span th:text="${coauthor.num}"></span>
+                                            </sup>
+                                            <span th:text="${coauthor.organizationShort} + ', '"></span>
+                                            <span th:text="${coauthor.city}"></span>
+                                        </span>
+                                    </span>
+                                    <span th:text="')'"></span><br>
+                                </span>
+                                </li>
+
+                                <form th:action="@{|/thesisPermissionUpdate?id=${public.publicationId}|}"
+                                      th:method="post" th:object="${publication}" enctype="multipart/form-data">
+                                    <div class="input-group my-1" th:unless="${public.publicationFilename==null}">
+                                        <a class="btn btn-outline-secondary" role="button"
+                                           th:download="${public.publicationPermission}"
+                                           th:href="@{|/permissionGet?id=${public.publicationId}|}">
+                                            Скачать разрешение на публикацию
+                                        </a>
+                                        <input class="form-control" id="permissionFile" type="file"
+                                               name="permissionFile" accept=".pdf"/>
+                                        <label class="custom-file-label" for="permissionFile"></label>
+                                        <button class="btn btn-outline-secondary" type="submit"
+                                                id="inputGroupFileAddon">Загрузить файл
+                                        </button>
+                                        <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
+                                    </div>
+                                </form>
+
+                                <div class="row g-3">
+                                    <div class="col-auto">
+                                         <span th:unless="${public.publicationFilename==null}">
+                                         <a class="btn btn-outline-primary btn-sm" role="button" type="submit"
+                                            th:download="${public.publicationFilename}"
+                                            th:href="@{|/publicationGet?id=${public.publicationId}|}">
+                                            СКАЧАТЬ ФАЙЛ ТЕЗИСОВ
+                                        </a>
+                                         </span>
+                                        <span th:if="${public.publicationFilename==null}">
+                                         <a class="btn btn-outline-primary btn-sm disabled" role="button" type="submit">
+                                            СКАЧАТЬ ФАЙЛ ТЕЗИСОВ
+                                         </a>
+                                        </span>
+                                    </div>
+                                    <div class="col-auto">
+                                        <span th:if="${secretary}">
+                                        <a class="btn btn-outline-primary btn-sm" role="button"
+                                           th:href="'/' + ${user.id} + '/thesisUpdate/' + ${public.publicationId}">
+                                            РЕДАКТИРОВАТЬ
+                                        </a>
+                                        </span>
+                                        <!--                                        <span th:if="${public.publicationFilename==null && !secretary}">-->
+                                        <!--                                        <a class="btn btn-outline-primary btn-sm disabled" role="button"-->
+                                        <!--                                           th:href="'/' + ${user.id} + '/thesisUpdate/' + ${public.publicationId}">-->
+                                        <!--                                            РЕДАКТИРОВАТЬ-->
+                                        <!--                                        </a>-->
+                                        <!--                                        </span>-->
+                                    </div>
+                                    <div class="col-auto">
+                                        <a class="btn btn-outline-danger btn-sm" data-bs-toggle="modal"
+                                           data-bs-target="#deleteModal" role="button" type="submit"
+                                           th:data-bs-target="${'#publicationDelete' + public.publicationId}">
+                                            Удалить
+                                        </a>
+                                        <div th:id="${'publicationDelete' + public.publicationId}"
+                                             class="modal fade" id="deleteModal" tabindex="-1"
+                                             aria-labelledby="deleteModalLabel" aria-hidden="true">
+                                            <div class="modal-dialog">
+                                                <div class="modal-content">
+                                                    <div class="modal-header">
+                                                        <input type="hidden" th:value="${public.publicationId}"
+                                                               name="id"/>
+                                                        <h5 class="modal-title" th:for="id"
+                                                            th:text="${public.publicationName}"></h5>
+                                                    </div>
+                                                    <div class="modal-body">
+                                                        Вы действительно хотите безвозвратно удалить ваш доклад?
+                                                    </div>
+                                                    <div class="modal-footer">
+                                                        <form th:action="@{/publicationDelete}" method="post"
+                                                              th:object="${publication}">
+                                                            <input type="hidden" id="publicationId" name="publicationId"
+                                                                   th:value="${public.publicationId}"/>
+                                                            <input type="hidden" name="${_csrf.parameterName}"
+                                                                   value="${_csrf.token}"/>
+                                                            <button class="btn btn-danger btn" type="submit">
+                                                                Удалить
+                                                            </button>
+                                                            <button type="button" class="btn btn-secondary"
+                                                                    data-bs-dismiss="modal">Нет
+                                                            </button>
+                                                        </form>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </ol>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="accordion-item">
+            <h2 class="accordion-header" id="headingTwo">
+                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                        data-bs-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
+                    <img src="/static/file-richtext.svg" alt="poster"/>
+                    <h3>&nbsp;&nbsp;&nbsp;Мои постеры</h3>
+                </button>
+            </h2>
+            <div id="collapseTwo" class="accordion-collapse collapse" aria-labelledby="headingTwo"
+                 data-bs-parent="#accordionExample">
+                <div th:unless="${posterexist}">
+                    <h5 class="my-4 mx-4"> У Вас нет постерных докладов</h5>
+                </div>
+
+                <div th:each="publication: ${publications}">
+                    <div th:if="*{#strings.equals(publication.presentationType, poster.getPresentationType())}">
+                        <div class="card card-body accordion-body">
+                            <label>
+                                <input th:unless="${publication.poster==null}" class="form-check-input" type="checkbox"
+                                       checked disabled/>
+                                <input th:if="${publication.poster==null}" class="form-check-input" type="checkbox"
+                                       disabled/>
+                                <b><span th:text="${publication.publicationName}"></span></b>
+                            </label>
+                            <form action="#" th:action="@{/publicationPosterLoad}" method="post"
+                                  enctype="multipart/form-data">
+                                        <span th:fragment="posterLoad">
+
+                                            <div class="row mb-2">
+                                                <label for="posterFile" class="col-sm-3 col-form-label"> Выберите файл постера* :
+                                                </label>
+                                            <div class="col-sm-5">
+                                                <span class="input-group mb-3">
+                                                <input class="form-control" placeholder=""
+                                                       id="posterFile" type="file"
+                                                       name="posterFile" accept=".pdf">
+                                                <button th:if="${publication.poster == null}"
+                                                        class="btn btn-outline-primary rounded-3 disabled"
+                                                        type="submit">ДОБАВИТЬ</button>
+                                                <button th:unless="${publication.poster == null}"
+                                                        class="btn btn-outline-secondary rounded-3 disabled"
+                                                        type="submit">ЗАМЕНИТЬ</button>
+                                                <input type="hidden" name="${_csrf.parameterName}"
+                                                       value="${_csrf.token}"/>
+                                                    <label class="col-form-label mx-2"> Прием постеров окончен</label>
+                                            </span>
+                                            </div>
+                                           </div>
+                                            <label class="text-danger"
+                                                   th:if="${publication.poster == null}">Файл
+                                                    постера еще не загружен</label>
+                                                    <input type="hidden" id="publicatId" name="publicationId"
+                                                           th:value="${publication.publicationId}"/>
+                                        </span>
+                            </form>
+                            <div class="btn-group" role="group">
+                                <div th:if="${publication.poster != null}" class="col-auto">
+                                    <a th:download="${publication.poster}"
+                                       th:href="@{|/posterGet?id=${publication.publicationId}|}"
+                                       class="btn btn-outline-primary btn-sm" role="button" type="submit">
+                                        СКАЧАТЬ
+                                    </a>
+                                </div>
+
+                                <form th:action="@{/publicationPosterDelete}" method="post" name="poster"
+                                      th:value="${publication.publicationId}">
+                                    <span th:fragment="posterDelete">
+                                            <button type="button" class="btn btn-outline-danger btn-sm mx-3 disabled"
+                                                    data-bs-toggle="modal" th:unless="${publication.poster == null}"
+                                                    th:data-bs-target="${'#publicationPosterDelete' + publication.publicationId}">
+                                                Удалить
+                                            </button>
+
+                                        <!--                                        Modal-->
+                                            <div class="modal fade"
+                                                 th:id="${'publicationPosterDelete' + publication.publicationId}"
+                                                 tabindex="-1" role="dialog" aria-labelledby="deletePoster"
+                                                 aria-hidden="true">
+                                                <div class="modal-dialog">
+                                                    <div class="modal-content">
+                                                        <div class="modal-header">
+                                                            <h5 class="modal-title" id="deletePoster">Подтвердите
+                                                                удаление постера</h5>
+                                                            <button type="button" class="btn-close"
+                                                                    data-bs-dismiss="modal"
+                                                                    aria-label="Close"></button>
+                                                        </div>
+                                                        <div class="modal-body">
+                                                            <div>
+                                                                <input type="hidden"
+                                                                       th:value="${publication.publicationId}"
+                                                                       name="id"/>
+                                                                <label th:for="id" class="form-check-label"
+                                                                       th:text="${publication.poster}">
+                                                                </label>
+                                                            </div>
+                                                            <button type="submit" class="btn btn-outline-danger btn-sm">
+                                                                Удалить
+                                                            </button>
+                                                            <input type="hidden" name="${_csrf.parameterName}"
+                                                                   value="${_csrf.token}"/>
+                                                            <div class="modal-footer"></div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                    </span>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <label class="col-form-label mx-4"> *Формат постера .pdf <10MB</label>
+            </div>
+        </div>
+
+
+        <div class="accordion-item">
+            <h2 class="accordion-header" id="headingThree">
+                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                        data-bs-target="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
+                    <img src="/static/file-earmark-ppt.svg" alt="paper"/>
+                    <h3>&nbsp;&nbsp;&nbsp;Мои статьи</h3>
+                </button>
+            </h2>
+            <div id="collapseThree" class="accordion-collapse collapse" aria-labelledby="headingThree"
+                 data-bs-parent="#accordionExample">
+
+                <div class="accordion-body">
+                    <span class="list-group-item border-0">
+                        <h5>Загрузка статьи в Russian physics journal</h5>
+                    </span>
+                    <ul class="list-group list-group-horizontal">
+                        <li class="list-group-item border-0">
+                            <button th:class="${user.actualYear==actualYear} ? 'btn btn-primary' : 'btn btn-secondary disabled'"
+                                    data-bs-toggle="collapse" href="#collapsePaperAddRpj" role="button"
+                                    aria-expanded="false"
+                                    aria-controls="collapseExample" id="collapsePaperRpj">ДОБАВИТЬ
+                            </button>
+                        </li>
+                        <!--                                        <li class="list-group-item border-0 my-1"><h5>Возможность загрузки статей будет доступна-->
+                        <!--                                            позже</h5>-->
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="collapse" id="collapsePaperAddRpj">
+                    <div class="card card-body">
+                        <form th:action="@{/personalPaperLoadRpj}" th:method="post" class="needs-validation"
+                              enctype="multipart/form-data">
+                                <span th:fragment="paperLoadRpj">
+                                    <div class="container">
+                                        <div th:fragment="paperRpj">
+                                             <p><b>Общий объем загружаемых файлов не должен превышать 10MB!</b></p>
+                                            <div class="form-floating">
+                                                <input th:class="${!#fields.hasErrors('paper.paperName')} ? 'form-control' : 'form-control is-invalid'"
+                                                       placeholder="Название статьи (на английском)*"
+                                                       th:value="${paper.paperName}"
+                                                       type="text" name="paperName" id="paperNameRpj"/>
+                                                <label for="paperNameRpj" class="mx-3 text-secondary">Название статьи (на английском языке)*</label>
+                                                <div class="invalid-feedback"
+                                                     th:if="${#fields.hasErrors('paper.paperName')}"
+                                                     th:errors="${paper.paperName}"></div>
+                                            </div>
+
+                                            <div class="input-group my-2">
+                                                <label class="col-form-label mx-1"> Файл статьи (.doc, .docx, .rtf)*</label>
+                                                <div class="custom-file">
+                                                    <input class="form-control" id="paperFileRpj"
+                                                           type="file" name="file" accept=".doc, .docx, .rtf"/>
+                                                    <label class="custom-file-label" for="paperFileRpj"></label>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="input-group">
+                                            <label class="col-form-label mx-1"> Файл разрешения публикации (.pdf)*
+                                            </label>
+                                            <div class="custom-file">
+                                                <input class="form-control" id="permissionPaperFileRpj"
+                                                       type="file" name="permissionFile" accept=".pdf"/>
+                                                <label class="custom-file-label" for="permissionPaperFileRpj"></label>
+                                            </div>
+                                        </div>
+                                        <p> * Поля, обязательные к заполнению</p>
+                                        <button class="btn btn-primary load" type="submit">Загрузить</button>
+                                        <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
+                                    </div>
+                                </span>
+                        </form>
+                    </div>
+                </div>
+
+                <!--                <div class="accordion-body">-->
+                <!--                    <span class="list-group-item border-0">-->
+                <!--                        <h5>Загрузка статьи в журнал индексируемый в SCImago</h5>-->
+                <!--                    </span>-->
+                <!--                    <ul class="list-group list-group-horizontal">-->
+                <!--                        <li class="list-group-item border-0">-->
+                <!--                            <button th:class="${user.actualYear==actualYear} ? 'btn btn-primary' : 'btn btn-secondary disabled'"-->
+                <!--                                    data-bs-toggle="collapse" href="#collapsePaperAdd" role="button"-->
+                <!--                                    aria-expanded="false"-->
+                <!--                                    aria-controls="collapseExample" id="collapsePaper" disabled>ДОБАВИТЬ-->
+                <!--                            </button>-->
+                <!--                        </li>-->
+                <!--                        <li class="list-group-item border-0 my-1"><h5>Возможность загрузки статей будет доступна-->
+                <!--                            позже</h5>-->
+                <!--                        </li>-->
+                <!--                    </ul>-->
+                <!--                </div>-->
+
+                <!--                <div class="collapse" id="collapsePaperAdd">-->
+                <!--                    <div class="card card-body">-->
+                <!--                        <form th:action="@{/personalPaperLoad}" th:method="post" class="needs-validation"-->
+                <!--                              enctype="multipart/form-data">-->
+                <!--                                <span th:fragment="paperLoad">-->
+                <!--                                    <div class="container">-->
+                <!--                                        <div th:fragment="paper">-->
+                <!--                                            <div class="col-sm-15 py-2">-->
+                <!--                                                <label class="col-form-label">Общий объем загружаемых файлов не-->
+                <!--                                                    должен превышать 10MB.</label><br>-->
+                <!--                                                <label for="paperName"-->
+                <!--                                                       class="col-form-label"> Название статьи (англ)* : </label>-->
+                <!--                                                <input th:class="${!#fields.hasErrors('paper.paperName')} ? 'form-control' : 'form-control is-invalid'"-->
+                <!--                                                       placeholder="Введите название статьи"-->
+                <!--                                                       th:value="${paper.paperName}"-->
+                <!--                                                       type="text" name="paperName" id="paperName"/>-->
+                <!--                                                <div class="invalid-feedback"-->
+                <!--                                                     th:if="${#fields.hasErrors('paper.paperName')}"-->
+                <!--                                                     th:errors="${paper.paperName}"></div>-->
+                <!--                                            </div>-->
+
+                <!--                                            <div class="input-group">-->
+                <!--                                                <label class="col-form-label"> Выберите файл статьи <10MB (.doc,-->
+                <!--                                                    .docx, .rtf)* : </label>-->
+                <!--                                                <div class="custom-file">-->
+                <!--                                                    <input class="form-control" id="paperFile" type="file"-->
+                <!--                                                           name="file"-->
+                <!--                                                           accept=".doc, .docx, .rtf"/>-->
+                <!--                                                    <label class="custom-file-label" for="paperFile"></label>-->
+                <!--                                                </div>-->
+                <!--                                            </div>-->
+                <!--                                        </div>-->
+                <!--                                        <div class="input-group">-->
+                <!--                                            <label class="col-form-label"> Выберите файл соглашения AIP (.pdf)*-->
+                <!--                                                : </label>-->
+                <!--                                            <div class="custom-file">-->
+                <!--                                                <input class="form-control" id="paperFilePdf" type="file"-->
+                <!--                                                       name="filePdf" accept=".pdf"/>-->
+                <!--                                                <label class="custom-file-label" for="paperFilePdf"></label>-->
+                <!--                                            </div>-->
+                <!--                                        </div>-->
+
+                <!--                                        <div class="input-group">-->
+                <!--                                            <label class="col-form-label"> Выберите файл разрешения публикации-->
+                <!--                                                (pdf)* :-->
+                <!--                                            </label>-->
+                <!--                                            <div class="custom-file">-->
+                <!--                                                <input class="form-control" id="permissionPaperFile" type="file"-->
+                <!--                                                       name="permissionFile" accept=".pdf"/>-->
+                <!--                                                <label class="custom-file-label" for="permissionPaperFile"></label>-->
+                <!--                                            </div>-->
+                <!--                                        </div>-->
+
+                <!--                                        <label class="col-form-label"> * Поля, обязательные к заполнению</label>-->
+                <!--                                        <div>-->
+                <!--                                            <button class="btn btn-primary load" type="submit">-->
+                <!--                                                Загрузить-->
+                <!--                                            </button>-->
+                <!--                                        </div>-->
+                <!--                                        <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>-->
+                <!--                                    </div>-->
+                <!--                                </span>-->
+                <!--                        </form>-->
+                <!--                    </div>-->
+                <!--                </div>-->
+
+                <span th:fragment="paperStatusMode">
+                <div th:unless="${papers.isEmpty()}" class="d-inline-flex bd-highlight">
+                    <h5 class="mx-3">Состояние публикации:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</h5>
+                    <p class="text-secondary">
+                        <img src="/static/envelope-exclamation.svg" width="24" height="24" alt="thesis"/> - на
+                        рецензии (серый);&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </p>
+                    <p class="text-danger mx-3">
+                        <img src="/static/envelope-dash.svg" width="24" height="24" alt="thesis"/> - ожидает
+                        исправлений от автора (красный);&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</p>
+                    <p class="text-primary">
+                        <img src="/static/envelope-check.svg" width="24" height="24" alt="thesis"/> - принято
+                        (синий)</p>
+                </div></span>
+
+                <div th:unless="${papers.isEmpty()}">
+                    <ol>
+                        <div class="form-check my-3" th:each="paper: ${papers}">
+                            <li>
+                                <div th:fragment="paperStatus">
+                                    <img data-bs-toggle="tooltip" data-bs-placement="top"
+                                         data-bs-title="Статья принята" width="24" height="24"
+                                         th:if="${paper.getState().state.equals('ACCEPTED')}"
+                                         src="/static/envelope-check.svg" alt="thesis"/>
+                                    <img data-bs-toggle="tooltip" data-bs-placement="top"
+                                         data-bs-title="Статья ожидает исправлений" width="24" height="24"
+                                         th:if="${paper.getState().state.equals('CHECKED')}"
+                                         src="/static/envelope-dash.svg" alt="thesis"/>
+                                    <img data-bs-toggle="tooltip" data-bs-placement="top"
+                                         data-bs-title="Статья на рецензии" width="24" height="24"
+                                         th:if="${paper.getState().state.equals('NEW') || paper.getState().state.equals('CORRECTED')}"
+                                         src="/static/envelope-exclamation.svg" alt="thesis"/>
+                                    <!--                                <label for="paper"></label>-->
+                                    <!--                                <input th:if="${paper.getState().state.equals('ACCEPTED')}"-->
+                                    <!--                                       class="form-check-input" type="checkbox" id="paper" checked disabled/>-->
+                                    <!--                                <label for="paper1"></label>-->
+                                    <!--                                <input th:unless="${paper.getState().state.equals('ACCEPTED')}"-->
+                                    <!--                                       class="form-check-input" type="checkbox" id="paper1" disabled/>-->
+                                    <a th:download="${paper.getPaperFilename()}"
+                                       th:href="@{|/paperGet?id=${paper.paperId}|}">
+                                        <span data-bs-toggle="tooltip" data-bs-placement="top"
+                                              data-bs-title="Статья на рецензии"
+                                              th:if="${paper.getState().state.equals('NEW') || paper.getState().state.equals('CORRECTED')}"
+                                              class="text-secondary" th:text="${paper.paperName}"></span>
+                                        <span data-bs-toggle="tooltip" data-bs-placement="top"
+                                              data-bs-title="Статья ожидает исправлений"
+                                              th:if="${paper.getState().state.equals('CHECKED')}" class="text-danger"
+                                              th:text="${paper.paperName}"></span>
+                                        <span data-bs-toggle="tooltip" data-bs-placement="top"
+                                              data-bs-title="Статья принята"
+                                              th:if="${paper.getState().state.equals('ACCEPTED')}"
+                                              th:text="${paper.paperName}"></span>
+                                    </a>
+
+                                    <div th:if="${paper.paperReview != null}">
+                                        <a th:download="${paper.paperReview}"
+                                           th:href="@{|/paperReviewGet?id=${paper.paperId}|}">
+                                    <span th:if="${paper.getState().state.equals('CHECKED')}" class="text-danger"
+                                          th:text="${'Скачать рецензию'}"></span>
+                                            <span th:if="${paper.getState().state.equals('CORRECTED')}"
+                                                  class="text-secondary"
+                                                  th:text="${'Скачать рецензию'}"></span>
+                                            <span th:if="${paper.getState().state.equals('ACCEPTED')}"
+                                                  class="text-primary"
+                                                  th:text="${'Скачать рецензию'}"></span>
+                                        </a>
+                                    </div>
+                                    <div>
+
+                                        <div th:if="${paper.getState().state.equals('CHECKED')}">
+                                            <form th:action="@{/paperUpdateCorrected}" th:object="${paper}"
+                                                  method="post" enctype="multipart/form-data">
+                                                <input type="hidden" th:name="paperId"
+                                                       th:value="${paper.paperId}"/>
+                                                <div class="input-group">
+                                                    <label class="input-group-text" for="paperUpdateCorrected">Исправленная
+                                                        версия (.doc, .docx, .rtf)* </label>
+                                                    <input type="file" class="form-control"
+                                                           id="paperUpdateCorrected"
+                                                           accept=".doc, .docx, .rtf" name="file"
+                                                           aria-describedby="inputGroupFileAdd"
+                                                           aria-label="Upload">
+                                                    <!--                                                <label class="input-group-text" for="paperUpdateCorrectedPdf">-->
+                                                    <!--                                                    .pdf* </label>-->
+                                                    <!--                                                <input type="file" class="form-control" id="paperUpdateCorrectedPdf"-->
+                                                    <!--                                                       accept=".pdf" name="filePdf"-->
+                                                    <!--                                                       aria-describedby="inputGroupFileAddPdf" aria-label="Upload">-->
+
+                                                    <button class="btn btn-primary load btn-sm my-1"
+                                                            type="submit">
+                                                        Отправить
+                                                    </button>
+                                                </div>
+                                            </form>
+                                        </div>
+
+                                        <div class="btn-group" role="group">
+                                            <div th:unless="${paper.getState().state.equals('CHECKED')}">
+                                                <div th:if="${secretary}" class="col-auto">
+                                                    <a class="btn btn-outline-primary btn-sm me-1"
+                                                       data-bs-toggle="collapse"
+                                                       th:data-bs-target="${'#paperupdate' + paper.paperId}"
+                                                       href="#collapsePaperRedaction" role="button"
+                                                       type="submit"
+                                                       aria-expanded="false" aria-controls="collapsePaper"
+                                                       id="collapsePaperRed">
+                                                        РЕДАКТИРОВАТЬ
+                                                    </a>
+                                                </div>
+                                            </div>
+
+                                            <div class="col-auto">
+                                                <form th:action="@{/paperDelete}" method="post" name="paper"
+                                                      th:value="${paper.paperId}">
+                                                        <span th:fragment="paperDelete">
+                                                            <button type="button" class="btn btn-outline-danger btn-sm"
+                                                                    data-bs-toggle="modal"
+                                                                    th:data-bs-target="${'#paperDelete' + paper.paperId}">
+                                                                Удалить
+                                                            </button>
+
+                                                            <!-- Modal -->
+                                                            <div class="modal fade"
+                                                                 th:id="${'paperDelete' + paper.paperId}"
+                                                                 tabindex="-1" role="dialog"
+                                                                 aria-labelledby="deletePaper"
+                                                                 aria-hidden="true">
+                                                                <div class="modal-dialog">
+                                                                    <div class="modal-content">
+                                                                        <div class="modal-header">
+                                                                            <h5 class="modal-title"
+                                                                                id="deletePaper">
+                                                                                Подтвердите
+                                                                                удаление статьи</h5>
+                                                                            <button type="button" class="btn-close"
+                                                                                    data-bs-dismiss="modal"
+                                                                                    aria-label="Close"></button>
+                                                                        </div>
+                                                                        <div class="modal-body">
+                                                                            <div>
+                                                                                <input type="hidden"
+                                                                                       th:value="${paper.paperId}"
+                                                                                       name="paperId"/>
+                                                                                <label th:for="paperId"
+                                                                                       class="form-check-label"
+                                                                                       th:text="${paper.paperName}">
+                                                                                </label>
+                                                                            </div>
+                                                                            <button type="submit"
+                                                                                    class="btn btn-outline-danger btn-sm">
+                                                                                Удалить
+                                                                            </button>
+                                                                            <input type="hidden"
+                                                                                   name="${_csrf.parameterName}"
+                                                                                   value="${_csrf.token}"/>
+                                                                            <div class="modal-footer"></div>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </span>
+                                                </form>
+
+                                                <div class="collapse border border-primary"
+                                                     id="collapsePaperRedaction"
+                                                     th:id="${'paperupdate' + paper.paperId}">
+                                                    <div class="card card-body">
+                                                        <form action="#" th:action="@{/paperUpdate}"
+                                                              method="post" class="needs-validation"
+                                                              enctype="multipart/form-data">
+                                                            <label for="paperId">
+                                                                <input type="hidden" id="paperId" name="paperId"
+                                                                       th:value="${paper.paperId}"/>
+                                                            </label>
+
+                                                            <div th:replace="personal :: paperRpj"></div>
+                                                            <button class="btn btn-primary load" type="submit">
+                                                                Сохранить изменения
+                                                            </button>
+                                                            <input type="hidden" name="${_csrf.parameterName}"
+                                                                   value="${_csrf.token}"/>
+                                                        </form>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </li>
+                        </div>
+                    </ol>
+                </div>
+            </div>
+        </div>
+
+
+        <div class="accordion-item">
+            <h2 class="accordion-header" id="headingSix">
+                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                        data-bs-target="#collapseSix" aria-expanded="false" aria-controls="collapseSix">
+                    <img src="/static/file-earmark-bar-graph.svg" alt="check"/>
+                    <h3>&nbsp;&nbsp;&nbsp;Оргвзнос</h3>
+                </button>
+            </h2>
+            <div id="collapseSix" class="accordion-collapse collapse" aria-labelledby="headingSix"
+                 data-bs-parent="#accordionExample">
+                <!--                <h5 class="mx-5 my-3">Возможность загрузки договоров будет доступна позже</h5>-->
+                <form th:action="@{/userContractLoad}" th:object="${user}"
+                      method="post" enctype="multipart/form-data">
+                    <div class="btn-group my-3 mx-5" role="group">
+                        <select class="form-select" name="contractType" id="contractType"
+                                field="${contractType}">
+                            <option class="col-sm-4" value="" disabled selected hidden>
+                                Выберите тип договора
+                            </option>
+                            <option th:each="contract : ${contractTypes}"
+                                    th:value="${contract.contractType}"
+                                    th:text="${contract.contractType}">
+                            </option>
+                        </select>
+                        <label class="input-group-text" for="userContractLoad">
+                            Загрузить скан договора (*.pdf) : </label>
+                        <input type="file" class="form-control" id="userContractLoad"
+                               accept=".pdf" name="file"
+                               aria-describedby="userContractLoad" aria-label="Upload">
+                        <div class="form-group mx-1">
+                            <button class="btn btn-primary load" type="submit" disabled>Загрузить</button>
+                        </div>
+                    </div>
+                </form>
+                <div th:if="${user.userContractSet != null}">
+                    <div th:each="contract : ${user.userContractSet}">
+                        <div class="btn-group mx-5 mt-3 py-3" role="group"
+                             th:if="${contract.contractFilename != null}">
+                            <a th:download="${contract.contractFilename}"
+                               th:href="@{|/userContractGet?id=${contract.getId()}|}">
+                                <span th:text="${'Договор на ' + contract.contractType}"></span>
+                            </a>
+                            <form th:action="@{/userContractDelete}" method="post" name="id"
+                                  th:value="${contract.getId()}">
+
+                                <a th:if="${contract.invoiceFilename == null}"
+                                   class="btn btn-outline-danger btn-sm mx-3 disabled" data-bs-toggle="modal"
+                                   th:data-bs-target="${'#userContractDelete' + contract.getId()}">
+                                    Удалить
+                                </a>
+                                <a th:if="${contract.invoiceFilename != null}"
+                                   class="btn btn-outline-danger btn-sm mx-3 disabled" data-bs-toggle="modal"
+                                   th:data-bs-target="${'#userContractDelete' + contract.getId()}"
+                                   aria-disabled="true">
+                                    Удалить
+                                </a>
+                                <a th:if="${contract.invoiceFilename != null}"
+                                   th:download="${contract.invoiceFilename}"
+                                   th:href="@{|/userInvoiceGet?id=${contract.getId()}|}">
+                                    <span th:text="${'Скачать счет'}"></span>
+                                </a>
+
+                                <!-- Modal -->
+                                <div class="modal fade"
+                                     th:id="${'userContractDelete' + contract.getId()}"
+                                     tabindex="-1" role="dialog" aria-labelledby="deleteModalUserContract"
+                                     aria-hidden="true">
+                                    <div class="modal-dialog">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <h5 class="modal-title" id="deleteModalUserContract">Подтвердите
+                                                    удаление договора</h5>
+                                                <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                                        aria-label="Close"></button>
+                                            </div>
+                                            <div class="modal-body">
+                                                <div>
+                                                    <input type="hidden" th:value="${contract.getId()}"
+                                                           name="id"/>
+                                                    <label th:for="id" class="form-check-label"
+                                                           th:text="${'Договор на ' + contract.contractType}">
+                                                    </label>
+                                                </div>
+                                                <button type="submit" class="btn btn-outline-danger btn-sm disabled">
+                                                    Удалить
+                                                </button>
+                                                <input type="hidden" name="${_csrf.parameterName}"
+                                                       value="${_csrf.token}"/>
+                                                <div class="modal-footer"></div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </form>
+                            <form th:if="${contract.invoiceFilename != null && contract.checkFilename == null}"
+                                  th:action="@{/userCheckLoad}" method="post"
+                                  enctype="multipart/form-data">
+                                <div class="btn-group ms-4" role="group">
+                                    <input type="hidden" th:name="conrtactId"
+                                           th:value="${contract.id}"/>
+                                    <input type="file" class="form-control" id="userCheckLoad"
+                                           accept=".pdf" name="file"
+                                           aria-describedby="userCheckLoad" aria-label="Upload">
+                                    <button class="btn btn-primary load btn-sm disabled" type="submit">Загрузить_чек
+                                    </button>
+                                </div>
+                            </form>
+                            <a class="ms-5"
+                               th:if="${contract.invoiceFilename != null && contract.checkFilename != null}"
+                               th:download="${contract.checkFilename}"
+                               th:href="@{|/userCheckGet?id=${contract.getId()}|}">
+                                <span th:text="${'Скачать чек'}"></span>
+                            </a>
+                            <form th:if="${contract.checkFilename != null}"
+                                  th:action="@{/userContractCheckDelete}" method="post" name="id"
+                                  th:value="${contract.getId()}">
+                                <a class="btn btn-outline-danger btn-sm mx-3 disabled" data-bs-toggle="modal"
+                                   th:data-bs-target="${'#userContractCheckDelete' + contract.getId()}">
+                                    Удалить чек
+                                </a>
+                                <!-- Modal -->
+                                <div class="modal fade"
+                                     th:id="${'userContractCheckDelete' + contract.getId()}"
+                                     tabindex="-1" role="dialog" aria-labelledby="deleteModalUserContractCheck"
+                                     aria-hidden="true">
+                                    <div class="modal-dialog">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <h5 class="modal-title" id="deleteModalUserContractCheck">Подтвердите
+                                                    удаление чека</h5>
+                                                <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                                        aria-label="Close"></button>
+                                            </div>
+                                            <div class="modal-body">
+                                                <div>
+                                                    <input type="hidden" th:value="${contract.getId()}"
+                                                           name="id"/>
+                                                    <label th:for="id" class="form-check-label"
+                                                           th:text="${contract.checkFilename}">
+                                                    </label>
+                                                </div>
+                                                <button type="submit" class="btn btn-outline-danger btn-sm">
+                                                    Удалить
+                                                </button>
+                                                <input type="hidden" name="${_csrf.parameterName}"
+                                                       value="${_csrf.token}"/>
+                                                <div class="modal-footer"></div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+                <!--                                <div th:if="${user.userContract != null}">-->
+                <!--                                    <form th:if="${user.userContract.invoiceFilename == null}"-->
+                <!--                                          th:action="@{/userContractLoad}" th:object="${user}" method="post"-->
+                <!--                                          enctype="multipart/form-data">-->
+                <!--                                        <div class="btn-group my-4 mx-5" role="group">-->
+                <!--                                            <select class="form-select" name="contractType" id="contractType2"-->
+                <!--                                                    field="${contractType}">-->
+                <!--                                                <option class="col-sm-4" value="" disabled selected hidden>-->
+                <!--                                                    Выберите тип договора-->
+                <!--                                                </option>-->
+                <!--                                                <option th:each="contract : ${contractTypes}"-->
+                <!--                                                        th:value="${contract.contractType}"-->
+                <!--                                                        th:text="${contract.contractType}">-->
+                <!--                                                </option>-->
+                <!--                                            </select>-->
+                <!--                                            <label th:if="${user.getUserContract() == null || user.getUserContract().contractFilename == null}"-->
+                <!--                                                   class="input-group-text" for="userContractLoad">-->
+                <!--                                                Загрузить скан договора (*.pdf) : </label>-->
+                <!--                                            <span th:if="${user.getUserContract() != null}">-->
+                <!--                                        <label th:if="${user.getUserContract().contractFilename != null}" class="input-group-text"-->
+                <!--                                               for="userContractLoad">-->
+                <!--                                            Заменить скан договора (*.pdf) : </label></span>-->
+                <!--                                            <input type="file" class="form-control" id="userContractLoad2"-->
+                <!--                                                   accept=".pdf" name="file"-->
+                <!--                                                   aria-describedby="userContractLoad" aria-label="Upload">-->
+                <!--                                            <div th:if="${user.getUserContract().contractFilename == null}"-->
+                <!--                                                 class="form-group mx-1">-->
+                <!--                                                <button class="btn btn-primary load" type="submit">Загрузить</button>-->
+                <!--                                            </div>-->
+                <!--                                            <div th:if="${user.getUserContract().contractFilename != null }"-->
+                <!--                                                 class="form-group mx-1">-->
+                <!--                                                <button class="btn btn-secondary load" type="submit">Заменить</button>-->
+                <!--                                            </div>-->
+                <!--                                        </div>-->
+                <!--                                    </form>-->
+                <!--                                </div>-->
+            </div>
+        </div>
+
+
+        <div class="accordion-item">
+            <h2 class="accordion-header" id="headingFour">
+                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                        data-bs-target="#collapseFour" aria-expanded="false" aria-controls="collapseFour">
+                    <img src="/static/file-person.svg" alt="thesis"/>
+                    <h3>&nbsp;&nbsp;&nbsp;Редактировать регистрационные данные</h3>
+                </button>
+            </h2>
+
+            <div id="collapseFour" class="accordion-collapse collapse" aria-labelledby="headingFour"
+                 data-bs-parent="#accordionExample">
+                <div class="accordion-body">
+                    <form th:action="@{/personalUpdate}" th:object="${user}" th:method="post"
+                          class="needs-validation">
+                        <div class="container">
+                            <div th:fragment="userUpdate">
+                                <div th:if="${admin}" class="border border-1 border-secondary rounded-3 px-3 py-3">
+                                    <div class="row row-cols-3">
+                                        <div class="form-group">
+                                            <label class="col-form-label"> Уровень доступа:</label><br>
+                                            <label class="col-sm-6 my-1">
+                                                <select class="form-select" name="userRoleName"
+                                                        field="${userRoleName}">
+                                                    <option value="0" th:text="*{roles}">Уровень доступа</option>
+                                                    <option value="1">ADMIN</option>
+                                                    <option value="2">EDITOR</option>
+                                                    <option value="3">FINANCIER</option>
+                                                    <option value="4">SECRETARY</option>
+                                                    <option value="5">USER</option>
+                                                </select>
+                                            </label>
+                                        </div>
+
+                                        <div class="form-group">
+                                            <label class="col-form-label"> Активация профиля (true-активен):</label>
+                                            <label class="col-sm-6 my-1">
+                                                <select class="form-select" name="active" field="${active}">
+                                                    <option value="0" th:text="*{isActive()}"></option>
+                                                    <option value="1">Активировать</option>
+                                                    <option value="2">Деактивировать</option>
+                                                </select>
+                                            </label>
+                                        </div>
+
+                                        <div class="form-group">
+                                            <label class="col-form-label"> Блокировка профиля (true-активен)
+                                                :</label>
+                                            <label class="col-sm-6 my-1">
+                                                <select class="form-select" name="block" field="${block}">
+                                                    <option value="0" th:text="*{isAccountNonLocked()}"></option>
+                                                    <option value="1">Активировать</option>
+                                                    <option value="2">Заблокировать</option>
+                                                </select>
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row row-cols-3 my-3">
+                                    <div class="form-floating">
+                                        <input th:class="${!#fields.hasErrors('lastName')} ? 'form-control' : 'form-control is-invalid'"
+                                               placeholder="Введите фамилию" th:value="*{lastName}" type="text"
+                                               name="lastName" id="lastName"/>
+                                        <div class="invalid-feedback" th:if="${#fields.hasErrors('lastName')}"
+                                             th:errors="*{lastName}"></div>
+                                        <label for="lastName" class="mx-3 text-secondary"> Фамилия* : </label>
+                                    </div>
+                                    <div class="form-floating">
+                                        <input th:class="${!#fields.hasErrors('firstName')} ? 'form-control' : 'form-control is-invalid'"
+                                               placeholder="Введите имя" th:value="*{firstName}" type="text"
+                                               name="firstName" id="firstName"/>
+                                        <div class="invalid-feedback" th:if="${#fields.hasErrors('firstName')}"
+                                             th:errors="*{firstName}"></div>
+                                        <label for="firstName" class="mx-3 text-secondary"> Имя* : </label>
+                                    </div>
+                                    <div class="form-floating">
+                                        <input class="form-control" placeholder="Введите отчество"
+                                               th:value="*{middleName}"
+                                               type="text" name="middleName" id="middleName"/>
+                                        <label for="middleName" class="mx-3 text-secondary"> Отчество : </label>
+                                    </div>
+                                </div>
+
+
+                                <div class="row row-cols-4">
+                                    <div class="col-3 my-3">
+                                        <input class="form-check-input" type="checkbox" name="young" id="young"
+                                               th:value="${young}" th:field="*{young}" th:checked="${young}">
+                                        <label class="form-check-label mx-2" for="young"> Молодой ученый</label>
+                                    </div>
+
+                                    <div class="form-floating">
+                                        <input class="form-control" placeholder="Введите степень"
+                                               th:value="*{degree}"
+                                               type="text" name="degree" id="degree" list="deg"/>
+                                        <datalist id="deg">
+                                            <option value="-">
+                                            <option value="к.т.н.">
+                                            <option value="к.ф.-м.н.">
+                                            <option value="д.т.н.">
+                                            <option value="д.ф.-м.н.">
+                                        </datalist>
+                                        <label class="mx-3 text-secondary"> Степень: </label>
+                                    </div>
+                                    <div class="form-floating">
+                                        <input class="form-control" placeholder="Введите должность"
+                                               th:value="*{position}"
+                                               type="text" name="position" id="position"/>
+                                        <label for="position" class="mx-3 text-secondary"> Должность: </label>
+                                    </div>
+
+                                    <div class="form-floating">
+                                        <input class="form-control" placeholder="Укажите телефон"
+                                               th:value="*{telephone}"
+                                               type="text" name="telephone" id="telephone"/>
+                                        <label for="telephone" class="mx-3 text-secondary"> Телефон: </label>
+                                    </div>
+                                </div>
+                            </div>
+                            <label class="col-form-label"> * Поля, обязательные к заполнению</label>
+                            <div class="py-2">
+                                <button class="btn btn-primary load" type="submit">Сохранить</button>
+                            </div>
+                            <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <div class="accordion-item">
+            <h2 class="accordion-header" id="headingFive">
+
+                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                        data-bs-target="#collapseFive" aria-expanded="true" aria-controls="collapseFive">
+                    <img src="/static/file-earmark-lock.svg" alt="thesis"/>
+                    <h3>&nbsp;&nbsp;&nbsp;Редактировать пароль</h3>
+                </button>
+            </h2>
+            <div id="collapseFive" class="accordion-collapse collapse" aria-labelledby="headingFive"
+                 data-bs-parent="#accordionExample">
+                <div class="accordion-body">
+                    <form th:action="@{/personalPasswordEdit}" th:object="${user}" th:method="post"
+                          class="needs-validation">
+                        <div class="container">
+                            <div class="row row-cols-2">
+                                <div class="form-floating">
+                                    <input th:class="${!#fields.hasErrors('password')} ? 'form-control' : 'form-control is-invalid'"
+                                           placeholder="Введите старый пароль" th:field="*{password}"
+                                           type="password" name="password" id="oldPassword"/>
+                                    <label for="oldPassword" class="mx-3 text-secondary"> Старый пароль* : </label>
+                                    <div class="invalid-feedback" th:if="${#fields.hasErrors('password')}"
+                                         th:errors="*{password}"></div>
+                                    <div th:if="${passwordError != null}" th:text="${passwordError}"
+                                         class="text-danger"></div>
+                                </div>
+                                <span th:fragment="passwordUpdate">
+                                        <div class="row row-cols-2">
+                                        <div class="form-floating">
+                                                <input th:class="${!#fields.hasErrors('password')} ? 'form-control' : 'form-control is-invalid'"
+                                                       placeholder="Введите новый пароль" type="password"
+                                                       name="newPassword" id="password"
+                                                       pattern="(?=.*\d)(?=.*[a-z,а-я])(?=.*[A-Z,А-Я]).{6,}"/>
+                                                <label for="password" class="mx-3 text-secondary">
+                                                Новый пароль** :
+                                            </label>
+                                                <div th:if="${mess != null}" th:text="${mess}"
+                                                     class="text-danger"></div>
+                                        </div>
+                                        <div class="form-floating">
+                                                <input th:class="${!#fields.hasErrors('password')} ? 'form-control' : 'form-control is-invalid'"
+                                                       placeholder="Повторите новый пароль" type="password"
+                                                       name="confirmation" id="confirmation"/>
+                                                <label for="confirmation" class="mx-3 text-secondary">
+                                                Повторите новый пароль* :
+                                            </label>
+                                                <div th:if="${confirmation != null}" th:text="${confirmation}"
+                                                     class="text-danger"></div>
+                                        </div>
+                                        </div>
+                                </span>
+                            </div>
+                            <div th:replace="registration :: validation">
+                            </div>
+                            <label class="my-1"> * Поля, обязательные к заполнению</label>
+                            <div class="py-2">
+                                <button class="btn btn-primary load" type="submit">Сохранить</button>
+                            </div>
+                            <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="/static/js/bootstrap.bundle.min.js"></script>
+<script src="/static/js/validate.js"></script>
+<script>
+    $('.btn.btn-primary.load').click(function () {
+        $(this).html('<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Загрузка...')
+    });
+
+    document.addEventListener('DOMContentLoaded', () => {
+        let myString = "[[${actualYearBool}]]";
+        let boolOutput = myString.toLowerCase() === 'true';
+        if (boolOutput) {
+            document.getElementById('modalButton').click();
+        }
+    });
+
+    const tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]')
+    const tooltipList = [...tooltipTriggerList].map(tooltipTriggerEl => new bootstrap.Tooltip(tooltipTriggerEl))
+
+</script>
+</body>
+</html>

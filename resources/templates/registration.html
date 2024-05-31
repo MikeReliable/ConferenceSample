@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="https://www.thymeleaf.org" lang="en">
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+<div th:replace="parts/header :: header"></div>
+
+<body>
+<div class="position-absolute top-50 start-50 translate-middle border border-3 border-primary rounded-3 px-3 py-3">
+    <a href="/">
+        <img src="/img/PhisicalMesomechanics.png" alt="meso2023" class="container text-center">
+    </a>
+    <h5 class="text-center py-2">РЕГИСТРАЦИЯ</h5>
+    <div class="alert alert-danger" role="alert" th:if="${message != null}" th:text="${message}"></div>
+    <div class="alert alert-success" role="alert" th:if="${messageOk != null}" th:text="${messageOk}"></div>
+    <form th:action="@{/registration}" th:object="${user}" th:method="post" class="needs-validation">
+        <div th:fragment="registration">
+            <div class="container text-center">
+                <div class="row my-3">
+                    <div class="col">
+                        <input th:class="${!#fields.hasErrors('lastName')} ? 'form-control' : 'form-control is-invalid'"
+                               placeholder="Фамилия*" th:field="*{lastName}" type="text"
+                               name="lastName" id="lastName"/>
+                        <div class="invalid-feedback" th:if="${#fields.hasErrors('lastName')}"
+                             th:errors="*{lastName}"></div>
+                    </div>
+                    <div class="col">
+                        <input th:class="${!#fields.hasErrors('firstName')} ? 'form-control' : 'form-control is-invalid'"
+                               placeholder="Имя*" th:field="*{firstName}" type="text"
+                               name="firstName" id="firstName"/>
+                        <div class="invalid-feedback" th:if="${#fields.hasErrors('firstName')}"
+                             th:errors="*{firstName}"></div>
+                    </div>
+                    <div class="col">
+                        <input class="form-control" placeholder="Отчество" th:field="*{middleName}"
+                               type="text" name="middleName" id="middleName"/>
+                    </div>
+                </div>
+
+                <div class="row form-group my-3">
+                    <div class="col">
+                        <input th:class="${!#fields.hasErrors('email')} ? 'form-control' : 'form-control is-invalid'"
+                               placeholder="E-mail*" th:field="*{email}" type="text" name="email"
+                               id="email"/>
+                        <div class="invalid-feedback" th:if="${#fields.hasErrors('email')}"
+                             th:errors="*{email}"></div>
+                    </div>
+                    <div class="col input-group">
+                        <input th:class="${!#fields.hasErrors('password')} ? 'form-control' : 'form-control is-invalid'"
+                               placeholder="Пароль*" th:field="*{password}" type="password"
+                               name="password" id="password"
+                               pattern="(?=.*\d)(?=.*[a-z,а-я])(?=.*[A-Z,А-Я]).{6,}"/>
+                        <a href="#" class="password-control">
+                            <img class="input-group-text" src="/static/eye.svg" alt="eye" id="input-group-text">
+                        </a>
+                        <div class="invalid-feedback" th:if="${#fields.hasErrors('password')}"
+                             th:errors="*{password}"></div>
+                        <div th:if="${mess != null}" th:text="${mess}" class="text-danger"></div>
+                    </div>
+                    <div class="col">
+                        <input th:class="${!#fields.hasErrors('password')} ? 'form-control' : 'form-control is-invalid'"
+                               placeholder="Повторите пароль*" type="password" name="confirmation"
+                               id="confirmation"/>
+                        <div th:if="${confirmation != null}" th:text="${confirmation}"
+                             class="text-danger"></div>
+                    </div>
+                </div>
+
+                <div class="row my-3">
+                    <div class="col">
+                        <input class="form-control" placeholder="Ученая степень" th:field="*{degree}"
+                               type="text" name="degree" id="degree" list="deg"/>
+                        <datalist id="deg">
+                            <option value="-">
+                            <option value="к.т.н.">
+                            <option value="к.ф.-м.н.">
+                            <option value="д.т.н.">
+                            <option value="д.ф.-м.н.">
+                        </datalist>
+                    </div>
+                    <div class="col">
+                        <input class="form-control" placeholder="Должность" th:field="*{position}"
+                               type="text" name="position" id="position"/>
+                    </div>
+                    <div class="col">
+                        <input class="form-control" placeholder="Телефон" th:field="*{telephone}"
+                               type="text" name="telephone" id="telephone"/>
+                    </div>
+                </div>
+                <div class="row my-2 mx-0">
+                    <div class="col-4 form-check">
+                        <input class="form-check-input" type="checkbox" id="young" th:field="*{young}">
+                        <label class="form-check-label" for="young"> Молодой ученый</label>
+                    </div>
+                </div>
+            </div>
+            <div class="container">
+                <div th:fragment="validation" class="my-1" id="message">
+                    <div>Пароль должен содержать:<br>
+                        <span id="letter" class="invalid mx-2"><b>Строчные</b> буквы</span>
+                        <span id="capital" class="invalid mx-2"><b>Заглавные</b> буквы</span>
+                        <span id="number" class="invalid mx-2"><b>Цифры</b></span>
+                        <span id="length" class="invalid mx-2">Минимум <b>6 знаков</b></span>
+                    </div>
+                </div>
+                <label class="my-1"> * Поля, обязательные к заполнению</label>
+            </div>
+        </div>
+
+        <div class="text-md-center" id="registration">
+            <button class="btn btn-primary load my-2" type="submit"> Зарегистрироваться</button>
+<!--            <label class="col-form-label mx-2"> Регистрация откроется позже</label>-->
+        </div>
+        <div class="text-md-center">
+            <a href="/login" class="link-secondary">Авторизоваться</a>
+        </div>
+        <div class="text-md-center">
+            <a href="/" class="link-secondary">Вернуться в главное меню</a>
+        </div>
+        <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
+    </form>
+</div>
+<script src="/static/js/bootstrap.bundle.min.js"></script>
+<script src="/static/js/validate.js"></script>
+<script>
+    $('body').on('click', '.password-control', function () {
+        if ($('#password').attr('type') === 'password') {
+            $('#password').attr('type', 'text');
+            $('#input-group-text').attr('src', '/static/eye-slash.svg');
+        } else {
+            $('#password').attr('type', 'password');
+            $('#input-group-text').attr('src', '/static/eye.svg');
+        }
+        return false;
+    });
+    $('.btn.btn-primary.load').click(function () {
+        $(this).html('<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Загрузка...')
+    });
+</script>
+</body>
+</html>

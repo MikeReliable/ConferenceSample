@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="https://www.thymeleaf.org" lang="en">
+<div th:replace="parts/headerScript :: header"></div>
+
+<body>
+<div th:replace="parts/navbarAdmin :: navbarAdmin"></div>
+<h1 id="list-item-1">h</h1>
+<div class="container-xl my-5">
+
+    <h3 class="text-center my-3">Написать автору</h3>
+
+    <span th:if="${publication.filename==null}">
+        <span th:text="${publication.user.lastName}"></span>
+        <span th:text="${publication.user.firstName.substring(0, 1)} + '.'"></span>
+        <span th:unless="${publication.user.middleName.isEmpty()}"
+              th:text="${publication.user.middleName.substring(0, 1)} + '.'"></span>
+        <span th:text="${publication.publicationName}"></span>
+    </span>
+    <span th:unless="${publication.filename==null}">
+        <a th:download="${publication.filename}"
+           th:href="@{|/publicationGet?id=${publication.publicationId}|}">
+            <span th:text="${publication.user.lastName}"></span>
+            <span th:text="${publication.user.firstName.substring(0, 1)} + '.'"></span>
+            <span th:unless="${publication.user.middleName.isEmpty()}"
+                  th:text="${publication.user.middleName.substring(0, 1)} + '.'"></span>
+            <span th:text="${publication.publicationName}"></span>
+        </a>
+    </span>
+    <div class="alert alert-success" role="alert" th:if="${messageOk != null}"
+         th:text="${messageOk}"></div>
+    <div class="alert alert-danger" role="alert" th:if="${message != null}"
+         th:text="${message}"></div>
+    <form th:action="@{'/admin/adminReviewThesis/' + *{publicationId}}" th:object="${publication}" method="post">
+        <div>
+        <span class="input-group-text my-2"
+              th:text="'Автор: ' + ${publication.user.lastName} + ' ' + ${publication.user.firstName} + ', e-mail: ' + ${publication.user.username}">Поле ввода текста письма</span>
+            <textarea class="form-control" aria-label="Поле ввода текста письма" name="textField" id="textField"
+                      rows="15" placeholder="Введите замечания и нажмите отправить"></textarea>
+        </div>
+        <button type="submit" class="btn btn-primary load btn-sm my-1"> Отправить
+        </button>
+    </form>
+</div>
+
+<script src="/static/js/bootstrap.bundle.min.js"></script>
+<script>
+    $('.btn.btn-primary.load').click(function () {
+        $(this).html('<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Загрузка...')
+    });
+</script>
+</body>
+</html>

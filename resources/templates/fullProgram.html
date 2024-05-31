@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org" lang="en">
+<div th:replace="parts/header :: header"></div>
+
+<body>
+<div th:replace="parts/navbarAdmin :: navbarAdmin"></div>
+<h1 id="list-item-1">h</h1>
+<div class="container-xl my-5">
+    <h3 class="text-center my-3">Список докладов по разделам в алфавитном порядке</h3>
+
+    <h3 class="my-3">Пленарные доклады</h3>
+    <ol>
+        <div th:each="public : ${publicationList}">
+            <span th:if="${public.publicationType.equals('Пленарный')}">
+            <div th:fragment="publicationOrder">
+                <li><b>
+                <span th:each="coauthor : ${public.getPublicationCoauthorsDTOList()}">
+                       <span th:replace="personal :: coauthor"></span>
+                </span></b><br>
+                    <span th:replace="personal :: affiliation"></span>
+                    <span th:text="${public.publicationName}"></span>
+                </li>
+            </div>
+            </span>
+        </div>
+    </ol>
+
+    <h3 class="my-3">Приглашенные доклады</h3>
+    <div th:each="section : ${sections}">
+        <h5 class="my-1" th:text="${section.getSection()}"></h5>
+        <ol>
+            <div th:each="public : ${publicationList}">
+            <span th:if="${public.publicationType.equals('Приглашенный')}">
+           <div th:fragment="publicationSectionOrder">
+               <span th:if="${public.publicationSection.equals(section.getSection())}">
+                <li><b>
+                <span th:each="coauthor : ${public.getPublicationCoauthorsDTOList()}">
+                        <span th:unless="${coauthor.doubleCoautor}">
+                        <span th:if="${coauthor.speaker}">
+                        <u>
+                            <span th:if="${coauthor.place == 0}" th:text="${coauthor.getLastName()}"></span>
+                            <span th:unless="${coauthor.place == 0}" th:text="', ' + ${coauthor.getLastName()}"></span>
+                            <span th:text="${coauthor.getFirstName().substring(0, 1)} + '.'"></span>
+                            <span th:unless="${coauthor.getMiddleName().isEmpty()}"
+                                  th:text="${coauthor.getMiddleName().substring(0, 1)} + '.'"></span>
+                            <sup th:unless="${coauthor.num ==0}">
+                                  <span th:text="${coauthor.num}"></span>
+                            </sup>
+                        </u>
+                        </span>
+                            <span th:unless="${coauthor.speaker}">
+                            <span th:if="${coauthor.place == 0}" th:text="${coauthor.getLastName()}"></span>
+                            <span th:unless="${coauthor.place == 0}" th:text="', ' + ${coauthor.getLastName()}"></span>
+                            <span th:text="${coauthor.getFirstName().substring(0, 1)} + '.'"></span>
+                            <span th:unless="${coauthor.getMiddleName().isEmpty()}"
+                                  th:text="${coauthor.getMiddleName().substring(0, 1)} + '.'"></span>
+                                <sup th:unless="${coauthor.num ==0}">
+                                  <span th:text="${coauthor.num}"></span>
+                                </sup>
+                        </span>
+                        </span>
+                      <span th:if="${coauthor.doubleCoautor}">
+                          <sup th:unless="${coauthor.num ==0}">
+                              <span th:text="', ' + ${coauthor.num}"></span>
+                          </sup>
+                     </span>
+                </span>
+                </b><br>
+                <span th:text="'('"></span>
+                <span th:each="coauthor : ${public.getPublicationCoauthorsDTOList()}">
+                        <span th:unless="${coauthor.organizationShort.equals('')}">
+                            <span th:unless="${coauthor.num==0 || coauthor.num==1}" th:text="${','}"></span>
+                            <sup th:unless="${coauthor.num ==0}">
+                               <span th:text="${coauthor.num}"></span>
+                            </sup>
+                            <span th:text="${coauthor.organizationShort} + ', '"></span>
+                            <span th:text="${coauthor.city}"></span>
+                        </span>
+                </span>
+                <span th:text="')'"></span><br>
+                <span th:text="${public.publicationName}"></span>
+                </li>
+               </span>
+            </div>
+            </span>
+            </div>
+        </ol>
+    </div>
+
+    <h3 class="my-3">Секционные доклады</h3>
+    <div th:each="section : ${sections}">
+        <h5 class="my-1" th:text="${section.getSection()}"></h5>
+        <ol>
+            <div th:each="public : ${publicationList}">
+            <span th:if="${public.publicationType.equals('Секционный')}">
+           <div th:replace="fullProgram :: publicationSectionOrder"></div>
+            </span>
+            </div>
+        </ol>
+    </div>
+
+    <h3 class="my-3">Постерные доклады</h3>
+    <ol>
+        <div th:each="public : ${publicationList}">
+            <span th:if="${public.publicationType.equals('Постерный')}">
+            <div th:replace="fullProgram :: publicationOrder"></div>
+            </span>
+        </div>
+    </ol>
+</div>
+
+<script src="/static/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

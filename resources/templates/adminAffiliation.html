@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="https://www.thymeleaf.org" lang="en">
+<div th:replace="parts/header :: header"></div>
+
+<body>
+<div th:replace="parts/navbarAdmin :: navbarAdmin"></div>
+<h1 id="list-item-1">h</h1>
+<div class="container-xl my-5">
+    <h3 class="text-center my-3">Аффилиации</h3>
+    <div class="alert alert-success" role="alert" th:if="${messageOk != null}"
+         th:text="${messageOk}"></div>
+    <div>
+        <table class="table table-bordered">
+            <thead class="table-secondary border border-secondary">
+            <tr>
+                <td>#</td>
+                <td>ID</td>
+                <td>Полное название</td>
+                <td>Короткое название</td>
+                <td>Город</td>
+            </tr>
+            </thead>
+            <tbody class="border border-secondary">
+            <tr th:each="affiliation : ${affiliations}" th:object="${affiliation}">
+                <td></td>
+                <td th:text="*{affiliationId}"></td>
+                <td th:text="*{organizationFull}"></td>
+                <td th:text="*{organizationShort}"></td>
+                <td th:text="*{city}"></td>
+                <td>
+                    <a th:unless="${editor}" type="button" class="btn btn-link btn-sm"
+                       th:href="'/admin/affiliation/' + *{affiliationId}">Edit</a>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+<script src="/static/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

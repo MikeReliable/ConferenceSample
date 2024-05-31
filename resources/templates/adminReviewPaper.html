@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="https://www.thymeleaf.org">
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+<div th:replace="parts/header :: header"></div>
+
+<body>
+<div th:replace="parts/navbarAdmin :: navbarAdmin"></div>
+<h1 id="list-item-1">h</h1>
+<div class="container-xl my-5">
+    <div class="alert alert-success" role="alert" th:if="${messageOk != null}"
+         th:text="${messageOk}"></div>
+    <div class="alert alert-danger" role="alert" th:if="${message != null}"
+         th:text="${message}"></div>
+    <h5>Статьи в Russian physics journal выделены <span class="text-success"><u>зеленым цветом</u></span></h5>
+
+    <h3 class="text-center my-3">Список новых статей по авторам</h3>
+    <div>
+        <ol>
+            <div th:each="paper : ${allPapersSort}" th:object="${paper}">
+                <div th:if="*{getState().state.equals('NEW')}">
+                    <li class="my-2">
+                        <div th:fragment="adminReviewPaperNew">
+                            <form th:action="@{/admin/adminReviewPaperChecked}" th:object="${paper}" method="post"
+                                  enctype="multipart/form-data">
+                                <input type="hidden" th:name="paperId" th:value="${paper.paperId}"/>
+                                <a th:if="${paper.paperFilename.contains('RPJ')}" class="text-success"
+                                   th:download="${paper.paperFilename}"
+                                   th:href="@{|/paperGet?id=${paper.paperId}|}">
+                                    <span th:text="${paper.user.lastName}"></span>
+                                    <span th:text="${paper.paperName}"></span>
+                                </a>
+                                <a th:unless="${paper.paperFilename.contains('RPJ')}"
+                                   th:download="${paper.paperFilename}"
+                                   th:href="@{|/paperGet?id=${paper.paperId}|}">
+                                    <span th:text="${paper.user.lastName}"></span>
+                                    <span th:text="${paper.paperName}"></span>
+                                </a> <br>
+                                <!--                                <a th:download="${paper.paperFilenamePdf}"-->
+                                <!--                                   th:href="@{|/paperPdfGet?id=${paper.paperId}|}">-->
+                                <!--                                    <span th:text="${paper.user.lastName}"></span>-->
+                                <!--                                    <span th:text="${paper.paperFilenamePdf}"></span>-->
+                                <!--                                </a>-->
+                                <div class="btn-group" role="group">
+                                    <label class="input-group-text" for="paperReviewNew">Рецензия</label>
+                                    <input type="file" class="form-control" id="paperReviewNew"
+                                           accept=".doc, .docx" name="file"
+                                           aria-describedby="inputGroup1" aria-label="Upload">
+                                    <label class="input-group-text" for="paperReviewNew">Статья</label>
+                                    <input type="file" class="form-control" id="paperReview"
+                                           accept=".doc, .docx" name="paperFile"
+                                           aria-describedby="inputGroup2" aria-label="Upload">
+                                    <select class="form-select form-select-sm" aria-label=".form-select-sm example"
+                                            name="state" field="${state}" style="width: 180px">
+                                        <option value="" selected>Выберите действие</option>
+                                        <option value="CHECKED">Отправить на доработку</option>
+                                        <option value="ACCEPTED">Принять</option>
+                                    </select>
+                                    <button class="btn btn-primary load btn-sm" type="submit">Отправить</button>
+                                </div>
+                            </form>
+                        </div>
+                    </li>
+                </div>
+            </div>
+        </ol>
+
+        <h3 class="text-center my-3">Список статей после исправления</h3>
+        <ol>
+            <div th:each="paper : ${allPapersSort}" th:object="${paper}">
+                <div th:if="*{getState().state.equals('CORRECTED')}">
+                    <li>
+                        <div th:replace="adminReviewPaper::adminReviewPaperNew"></div>
+                        <div>
+                            <a th:download="${paper.paperReview}"
+                               th:href="@{|/paperGet?id=${paper.paperId}|}">
+                                <span th:text="${paper.user.lastName}"></span>
+                                <span th:text="${'Рецензия'}"></span>
+                            </a>
+                        </div>
+                    </li>
+                </div>
+            </div>
+        </ol>
+
+        <h3 class="text-center my-3">Список статей отправленных на доработку</h3>
+        <ol>
+            <div th:each="paper : ${allPapersSort}" th:object="${paper}">
+                <div th:if="*{getState().state.equals('CHECKED')}">
+                    <li>
+                        <div th:fragment="adminReviewPaperChecked">
+                            <a th:if="${paper.paperFilename.contains('RPJ')}" class="text-success"
+                               th:download="${paper.paperFilename}"
+                               th:href="@{|/paperGet?id=${paper.paperId}|}">
+                                <span th:text="${paper.user.lastName}"></span>
+                                <span th:text="${paper.paperName}"></span>
+                            </a>
+                            <a th:unless="${paper.paperFilename.contains('RPJ')}"
+                               th:download="${paper.paperFilename}"
+                               th:href="@{|/paperGet?id=${paper.paperId}|}">
+                                <span th:text="${paper.user.lastName}"></span>
+                                <span th:text="${paper.paperName}"></span>
+                            </a> <br>
+                            <!--                            <a th:download="${paper.paperFilenamePdf}"-->
+                            <!--                               th:href="@{|/paperPdfGet?id=${paper.paperId}|}">-->
+                            <!--                                <span th:text="${paper.user.lastName}"></span>-->
+                            <!--                                <span th:text="${paper.paperFilenamePdf}"></span>-->
+                            <!--                            </a>-->
+                            <div>
+                                <a th:download="${paper.paperReview}"
+                                   th:href="@{|/paperReviewGet?id=${paper.paperId}|}">
+                                    <!--                                    <span th:text="${paper.user.lastName}"></span>-->
+                                    <span th:text="${'Рецензия'}"></span>
+                                </a>
+                            </div>
+                        </div>
+                    </li>
+                </div>
+            </div>
+        </ol>
+
+        <h3 class="text-center my-3">Список принятых статей</h3>
+        <ol>
+            <div th:each="paper : ${allPapersSort}" th:object="${paper}">
+                <div th:if="*{getState().state.equals('ACCEPTED')}">
+                    <li>
+                        <div th:replace="adminReviewPaper::adminReviewPaperChecked"></div>
+                    </li>
+                </div>
+            </div>
+        </ol>
+    </div>
+</div>
+<script src="/static/js/bootstrap.bundle.min.js"></script>
+<script src="/static/js/validate.js"></script>
+<script>
+    $('.btn.btn-primary.load').click(function () {
+        $(this).html('<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Загрузка...')
+    });
+</script>
+</body>
+</html>

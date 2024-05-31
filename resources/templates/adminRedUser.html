@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="https://www.thymeleaf.org" lang="en">
+<div th:replace="parts/header :: header"></div>
+
+<body>
+<div th:replace="parts/navbarAdmin :: navbarAdmin"></div>
+
+<h1 id="list-item-1">h</h1>
+<div class="container-xl my-5">
+    <div class="alert alert-success" role="alert" th:if="${messageOk != null}"
+         th:text="${messageOk}"></div>
+    <div class="alert alert-danger" role="alert" th:if="${message != null}"
+         th:text="${message}"></div>
+
+    <div class="accordion" id="adminAccordionExample">
+
+        <div class="accordion-item">
+            <h2 class="accordion-header" id="headingOne">
+                <button class="accordion-button" type="button" data-bs-toggle="collapse"
+                        data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+                    <h3>Тезисы</h3>
+                </button>
+            </h2>
+            <div id="collapseOne" class="accordion-collapse collapse show" aria-labelledby="headingOne"
+                 data-bs-parent="#accordionExample">
+                <div class="accordion-body">
+                    <a class="btn btn-primary my-3" aria-current="page" th:href="'/' + ${user.id} + '/thesisAdd'">
+                        ДОБАВИТЬ
+                    </a>
+                    <div th:replace="personal::thesis"></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="accordion-item">
+            <h2 class="accordion-header" id="headingTwo">
+                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                        data-bs-target="#collapseTwo" aria-expanded="true" aria-controls="collapseTwo">
+                    <h3>Постеры</h3>
+                </button>
+            </h2>
+            <div id="collapseTwo" class="accordion-collapse collapse" aria-labelledby="headingTwo"
+                 data-bs-parent="#accordionExample">
+                <div class="accordion-body">
+                    <div th:each="publication: ${publications}">
+                        <div th:if="*{#strings.equals(publication.presentationType, poster)}">
+                            <div class="card card-body accordion-body">
+                                <label for="poster"><input class="form-check-input" type="checkbox" id="poster"
+                                                           checked disabled>
+                                    <span th:if="${publication.poster == null}">
+                                    <span th:text="${publication.publicationName}"></span>
+                                </span>
+                                    <span th:unless="${publication.poster==null}">
+                                <a th:download="${publication.poster}"
+                                   th:href="@{|/posterGet?id=${publication.publicationId}|}">
+                                <span th:text="${publication.publicationName}"></span>
+                                </a>
+                                </span>
+                                </label>
+                                <form class="row g-3"
+                                      th:action="@{'/admin/adminRedUser/'+ ${user.id} + '/publicationPosterLoad'}"
+                                      th:object="${user}" th:method="post" enctype="multipart/form-data">
+
+                                    <div th:replace="personal::posterLoad"></div>
+                                </form>
+                                <div class="row g-3" th:unless="${publication.poster == null}">
+                                    <!--                                <div class="col-auto">-->
+                                    <!--                                    <a th:download="${publication.poster}"-->
+                                    <!--                                       th:href="@{|/posterGet?id=${publication.publicationId}|}"-->
+                                    <!--                                       class="btn btn-primary btn-sm" role="button" type="submit">-->
+                                    <!--                                        СКАЧАТЬ-->
+                                    <!--                                    </a>-->
+                                    <!--                                </div>-->
+                                    <div class="col-auto">
+                                        <form th:action="@{/publicationPosterDelete}" method="post" name="poster"
+                                              th:value="${publication.publicationId}">
+                                            <div th:replace="personal::posterDelete"></div>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <label class="col-form-label"> *Формат постера .pdf <10MB</label>
+                </div>
+            </div>
+        </div>
+
+        <div class="accordion-item">
+            <h2 class="accordion-header" id="headingThree">
+                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                        data-bs-target="#collapseThree" aria-expanded="true" aria-controls="collapseThree">
+                    <h3>Статьи</h3>
+                </button>
+            </h2>
+            <div id="collapseThree" class="accordion-collapse collapse" aria-labelledby="headingThree"
+                 data-bs-parent="#accordionExample">
+
+                <div class="accordion-body">
+                     <span class="list-group-item border-0">
+                        <h5>Загрузка статьи в Russian physics journal</h5>
+                    </span>
+                    <ul class="list-group list-group-horizontal">
+                        <li class="list-group-item border-0">
+                            <button class="btn btn-primary mx-2" data-bs-toggle="collapse" href="#collapsePaperAdd"
+                                    role="button" aria-expanded="false"
+                                    aria-controls="collapseExample" id="collapsePaper">ДОБАВИТЬ
+                            </button>
+                        </li>
+                    </ul>
+                    <div class="collapse" id="collapsePaperAdd">
+                        <div class="card card-body">
+                            <form th:action="@{'/admin/adminRedUser/'+${user.id} + '/adminPaperLoadRpj'}"
+                                  th:method="post"
+                                  class="needs-validation"
+                                  enctype="multipart/form-data">
+                                <div th:replace="personal::paperLoadRpj"></div>
+                            </form>
+                        </div>
+                    </div>
+
+                    <div th:replace="personal::paperStatusMode"></div>
+                    <ol>
+                        <div class="form-check my-2" th:each="paper: ${papers}">
+                            <li>
+                                <div th:replace="personal::paperStatus"></div>
+                            </li>
+                        </div>
+                    </ol>
+                </div>
+            </div>
+        </div>
+
+        <div class="accordion-item">
+            <h2 class="accordion-header" id="headingFour">
+                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                        data-bs-target="#collapseFour" aria-expanded="true" aria-controls="collapseFour">
+                    <h3>Редактировать регистрационные данные</h3>
+                </button>
+            </h2>
+            <div id="collapseFour" class="accordion-collapse collapse" aria-labelledby="headingFour"
+                 data-bs-parent="#accordionExample">
+                <div class="accordion-body">
+                    <form th:action="@{'/admin/adminRedUser/'+ ${user.id} + '/personalUpdate'}" th:object="${user}"
+                          th:method="post"
+                          class="needs-validation">
+                        <!--                        <h6 th:text="${user.lastName + ' ' + user.firstName + ' ' + user.middleName + ' e-mail: ' + user.username}"></h6>-->
+                        <h6 th:text="${'E-mail: ' + user.username}"></h6>
+                        <div th:replace="personal :: userUpdate"></div>
+                        <label class="col-form-label"> * Поля, обязательные к заполнению</label>
+                        <div class="py-2"><input class="btn btn-primary" type="submit" value="Сохранить"/></div>
+                        <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <div class="accordion-item">
+            <h2 class="accordion-header" id="headingFive">
+                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                        data-bs-target="#collapseFive" aria-expanded="true" aria-controls="collapseFive">
+                    <h3>Редактировать пароль</h3>
+                </button>
+            </h2>
+            <div id="collapseFive" class="accordion-collapse collapse" aria-labelledby="headingFive"
+                 data-bs-parent="#accordionExample">
+                <div class="accordion-body">
+                    <form th:action="@{'/admin/adminRedUser/'+ ${user.id} + '/personalPasswordEdit'}"
+                          th:object="${user}" th:method="post"
+                          class="needs-validation">
+                        <div class="container">
+                            <div class="row row-cols-2">
+                                <div th:replace="personal :: passwordUpdate"></div>
+                            </div>
+                            <div id="message">
+                                <div>**Пароль должен содержать:
+                                    <span id="letter" class="invalid mx-3"><b>Строчные</b> буквы</span>
+                                    <span id="capital" class="invalid mx-3"><b>Заглавные</b> буквы</span>
+                                    <span id="number" class="invalid mx-3"><b>Цифры</b></span>
+                                    <span id="length" class="invalid mx-3">Минимум <b>6 знаков</b></span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="py-2"><input class="btn btn-primary" type="submit" value="Сохранить"/>
+                        </div>
+                        <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="/static/js/bootstrap.bundle.min.js"></script>
+<script src="/static/js/validate.js"></script>
+</body>
+</html>

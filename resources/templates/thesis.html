@@ -1,0 +1,426 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org" lang="en">
+<div th:replace="parts/headerScript :: header"></div>
+
+<body>
+<div th:replace="parts/navbar :: navbar"></div>
+
+<h1>h</h1>
+<div class="container-xl py-3">
+    <div class="alert alert-success" role="alert" th:if="${messageOk != null}"
+         th:text="${messageOk}"></div>
+    <div class="alert alert-danger" role="alert" th:if="${message != null}"
+         th:text="${message}"></div>
+
+    <h4>ДОБАВЛЕНИЕ ТЕЗИСОВ КОНФЕРЕНЦИИ</h4>
+    <form action="#" th:action="@{'/' + ${user.id} + '/thesisAdd'}" th:method="post"
+          class="needs-validation" name="form" enctype="multipart/form-data">
+
+        <label class="col-form-label" for="publicationName"> НАЗВАНИЕ*
+        </label>
+        <div class="col-sm-11">
+            <input th:class="${!#fields.hasErrors('publication.publicationName')} ? 'form-control' : 'form-control is-invalid'"
+                   th:value="${publication.publicationName}"
+                   type="text" name="publicationName" placeholder="Введите название доклада" id="publicationName"/>
+            <div class="invalid-feedback"
+                 th:if="${#fields.hasErrors('publication.publicationName')}"
+                 th:errors="${publication.publicationName}"></div>
+        </div>
+
+        <label class="col-form-label mt-3"> Внесите всех соавторов, включая себя, в порядке следования (как в
+            тезисах).<br>
+            При множественной аффилиации заполнять в новое поле (одна аффилиация - одна строка).<br>
+            В случае, если вы не сможете найти вашу организацию в списке, то ее можно будет добавить <a
+                    href="/affiliation">по ссылке</a>.
+        </label>
+        <div class="row row-cols-5">
+            <div class="form-group row">
+                <label class="col-form-label"> Фамилия* : </label>
+            </div>
+            <div class="form-group row">
+                <label class="col-form-label"> Имя* : </label>
+            </div>
+            <div class="form-group row">
+                <label class="col-form-label"> Отчество : </label>
+            </div>
+            <div class="form-group row">
+                <label class="col-form-label"> Организация* : </label>
+            </div>
+            <div class="form-group row">
+                <label class=" col-form-label"> Город : </label>
+            </div>
+        </div>
+
+        <div class="row row-cols-5">
+            <div class="form-group row">
+                <label for="lastName0"></label>
+                <input class="form-control" placeholder="Иванов" name="lastName0" id="lastName0"/>
+            </div>
+            <div class="form-group row">
+                <label for="firstName0"></label>
+                <input class="form-control" placeholder="Иван" name="firstName0" id="firstName0"/>
+            </div>
+            <div class="form-group row">
+                <label for="middleName0"></label>
+                <input class="form-control" placeholder="Иванович" name="middleName0" id="middleName0"/>
+            </div>
+            <div class="form-group row">
+                <label for="organizationShort0"></label>
+                <select class="form-select" name="organizationShort0" id="organizationShort0">
+                    <option>
+                        Организация
+                    </option>
+                    <option th:each="affiliation : ${affiliationList}"
+                            th:value="${affiliation.organizationShort}"
+                            th:text="${affiliation.organizationShort}">
+                    </option>
+                </select>
+            </div>
+            <div class="form-group row">
+                <label for="city0"> </label>
+                <input class="form-control" placeholder="Город" name="city0" id="city0" readonly/>
+            </div>
+        </div>
+        <div class="row row-cols-5">
+            <div class="form-group row">
+                <label for="lastName1"></label>
+                <input class="form-control" placeholder="Иванов" name="lastName1" id="lastName1"/>
+            </div>
+            <div class="form-group row">
+                <label for="firstName1"></label>
+                <input class="form-control" placeholder="Иван" name="firstName1" id="firstName1"/>
+            </div>
+            <div class="form-group row">
+                <label for="middleName1"></label>
+                <input class="form-control" placeholder="Иванович" name="middleName1" id="middleName1"/>
+            </div>
+            <div class="form-group row">
+                <label for="organizationShort1"></label>
+                <select class="form-select" name="organizationShort1" id="organizationShort1">
+                    <option>
+                        Организация
+                    </option>
+                    <option th:each="affiliation : ${affiliationList}"
+                            th:value="${affiliation.organizationShort}"
+                            th:text="${affiliation.organizationShort}">
+                    </option>
+                </select>
+            </div>
+            <div class="form-group row">
+                <label for="city1"> </label>
+                <input class="form-control" placeholder="Город" name="city1" id="city1" readonly/>
+            </div>
+        </div>
+        <div class="row row-cols-5">
+            <div class="form-group row">
+                <label for="lastName2"></label>
+                <input class="form-control" placeholder="Иванов" name="lastName2" id="lastName2"/>
+            </div>
+            <div class="form-group row">
+                <label for="firstName2"></label>
+                <input class="form-control" placeholder="Иван" name="firstName2" id="firstName2"/>
+            </div>
+            <div class="form-group row">
+                <label for="middleName2"></label>
+                <input class="form-control" placeholder="Иванович" name="middleName2" id="middleName2"/>
+            </div>
+            <div class="form-group row">
+                <label for="organizationShort2"></label>
+                <select class="form-select" name="organizationShort2" id="organizationShort2">
+                    <option>
+                        Организация
+                    </option>
+                    <option th:each="affiliation : ${affiliationList}"
+                            th:value="${affiliation.organizationShort}"
+                            th:text="${affiliation.organizationShort}">
+                    </option>
+                </select>
+            </div>
+            <div class="form-group row">
+                <label for="city2"> </label>
+                <input class="form-control" placeholder="Город" name="city2" id="city2" readonly/>
+            </div>
+        </div>
+        <div class="row row-cols-5">
+            <div class="form-group row">
+                <label for="lastName3"></label>
+                <input class="form-control" placeholder="Иванов" name="lastName3" id="lastName3"/>
+            </div>
+            <div class="form-group row">
+                <label for="firstName3"></label>
+                <input class="form-control" placeholder="Иван" name="firstName3" id="firstName3"/>
+            </div>
+            <div class="form-group row">
+                <label for="middleName3"></label>
+                <input class="form-control" placeholder="Иванович" name="middleName3" id="middleName3"/>
+            </div>
+            <div class="form-group row">
+                <label for="organizationShort3"></label>
+                <select class="form-select" name="organizationShort3" id="organizationShort3">
+                    <option>
+                        Организация
+                    </option>
+                    <option th:each="affiliation : ${affiliationList}"
+                            th:value="${affiliation.organizationShort}"
+                            th:text="${affiliation.organizationShort}">
+                    </option>
+                </select>
+            </div>
+            <div class="form-group row">
+                <label for="city3"> </label>
+                <input class="form-control" placeholder="Город" name="city3" id="city3" readonly/>
+            </div>
+        </div>
+        <div class="row row-cols-5">
+            <div class="form-group row">
+                <label for="lastName4"></label>
+                <input class="form-control" placeholder="Иванов" name="lastName4" id="lastName4"/>
+            </div>
+            <div class="form-group row">
+                <label for="firstName4"></label>
+                <input class="form-control" placeholder="Иван" name="firstName4" id="firstName4"/>
+            </div>
+            <div class="form-group row">
+                <label for="middleName4"></label>
+                <input class="form-control" placeholder="Иванович" name="middleName4" id="middleName4"/>
+            </div>
+            <div class="form-group row">
+                <label for="organizationShort4"></label>
+                <select class="form-select" name="organizationShort4" id="organizationShort4">
+                    <option>
+                        Организация
+                    </option>
+                    <option th:each="affiliation : ${affiliationList}"
+                            th:value="${affiliation.organizationShort}"
+                            th:text="${affiliation.organizationShort}">
+                    </option>
+                </select>
+            </div>
+            <div class="form-group row">
+                <label for="city4"> </label>
+                <input class="form-control" placeholder="Город" name="city4" id="city4" readonly/>
+            </div>
+        </div>
+        <div class="row row-cols-5">
+            <div class="form-group row">
+                <label for="lastName5"></label>
+                <input class="form-control" placeholder="Иванов" name="lastName5" id="lastName5"/>
+            </div>
+            <div class="form-group row">
+                <label for="firstName5"></label>
+                <input class="form-control" placeholder="Иван" name="firstName5" id="firstName5"/>
+            </div>
+            <div class="form-group row">
+                <label for="middleName5"></label>
+                <input class="form-control" placeholder="Иванович" name="middleName5" id="middleName5"/>
+            </div>
+            <div class="form-group row">
+                <label for="organizationShort5"></label>
+                <select class="form-select" name="organizationShort5" id="organizationShort5">
+                    <option>
+                        Организация
+                    </option>
+                    <option th:each="affiliation : ${affiliationList}"
+                            th:value="${affiliation.organizationShort}"
+                            th:text="${affiliation.organizationShort}">
+                    </option>
+                </select>
+            </div>
+            <div class="form-group row">
+                <label for="city5"> </label>
+                <input class="form-control" placeholder="Город" name="city5" id="city5" readonly/>
+            </div>
+        </div>
+        <div class="row row-cols-5">
+            <div class="form-group row">
+                <label for="lastName6"></label>
+                <input class="form-control" placeholder="Иванов" name="lastName6" id="lastName6"/>
+            </div>
+            <div class="form-group row">
+                <label for="firstName6"></label>
+                <input class="form-control" placeholder="Иван" name="firstName6" id="firstName6"/>
+            </div>
+            <div class="form-group row">
+                <label for="middleName6"></label>
+                <input class="form-control" placeholder="Иванович" name="middleName6" id="middleName6"/>
+            </div>
+            <div class="form-group row">
+                <label for="organizationShort6"></label>
+                <select class="form-select" name="organizationShort6" id="organizationShort6">
+                    <option>
+                        Организация
+                    </option>
+                    <option th:each="affiliation : ${affiliationList}"
+                            th:value="${affiliation.organizationShort}"
+                            th:text="${affiliation.organizationShort}">
+                    </option>
+                </select>
+            </div>
+            <div class="form-group row">
+                <label for="city6"> </label>
+                <input class="form-control" placeholder="Город" name="city6" id="city6" readonly/>
+            </div>
+        </div>
+        <div class="row row-cols-5">
+            <div class="form-group row">
+                <label for="lastName7"></label>
+                <input class="form-control" placeholder="Иванов" name="lastName7" id="lastName7"/>
+            </div>
+            <div class="form-group row">
+                <label for="firstName7"></label>
+                <input class="form-control" placeholder="Иван" name="firstName7" id="firstName7"/>
+            </div>
+            <div class="form-group row">
+                <label for="middleName7"></label>
+                <input class="form-control" placeholder="Иванович" name="middleName7" id="middleName7"/>
+            </div>
+            <div class="form-group row">
+                <label for="organizationShort7"></label>
+                <select class="form-select" name="organizationShort7" id="organizationShort7">
+                    <option>
+                        Организация
+                    </option>
+                    <option th:each="affiliation : ${affiliationList}"
+                            th:value="${affiliation.organizationShort}"
+                            th:text="${affiliation.organizationShort}">
+                    </option>
+                </select>
+            </div>
+            <div class="form-group row">
+                <label for="city7"> </label>
+                <input class="form-control" placeholder="Город" name="city7" id="city7" readonly/>
+            </div>
+        </div>
+        <div class="row row-cols-5">
+            <div class="form-group row">
+                <label for="lastName8"></label>
+                <input class="form-control" placeholder="Иванов" name="lastName8" id="lastName8"/>
+            </div>
+            <div class="form-group row">
+                <label for="firstName8"></label>
+                <input class="form-control" placeholder="Иван" name="firstName8" id="firstName8"/>
+            </div>
+            <div class="form-group row">
+                <label for="middleName8"></label>
+                <input class="form-control" placeholder="Иванович" name="middleName8" id="middleName8"/>
+            </div>
+            <div class="form-group row">
+                <label for="organizationShort8"></label>
+                <select class="form-select" name="organizationShort8" id="organizationShort8">
+                    <option>
+                        Организация
+                    </option>
+                    <option th:each="affiliation : ${affiliationList}"
+                            th:value="${affiliation.organizationShort}"
+                            th:text="${affiliation.organizationShort}">
+                    </option>
+                </select>
+            </div>
+            <div class="form-group row">
+                <label for="city8"> </label>
+                <input class="form-control" placeholder="Город" name="city8" id="city8" readonly/>
+            </div>
+        </div>
+        <div class="row row-cols-5">
+            <div class="form-group row">
+                <label for="lastName9"></label>
+                <input class="form-control" placeholder="Иванов" name="lastName9" id="lastName9"/>
+            </div>
+            <div class="form-group row">
+                <label for="firstName9"></label>
+                <input class="form-control" placeholder="Иван" name="firstName9" id="firstName9"/>
+            </div>
+            <div class="form-group row">
+                <label for="middleName9"></label>
+                <input class="form-control" placeholder="Иванович" name="middleName9" id="middleName9"/>
+            </div>
+            <div class="form-group row">
+                <label for="organizationShort9"></label>
+                <select class="form-select" name="organizationShort9" id="organizationShort9">
+                    <option>
+                        Организация
+                    </option>
+                    <option th:each="affiliation : ${affiliationList}"
+                            th:value="${affiliation.organizationShort}"
+                            th:text="${affiliation.organizationShort}">
+                    </option>
+                </select>
+            </div>
+            <div class="form-group row">
+                <label for="city9"> </label>
+                <input class="form-control" placeholder="Город" name="city9" id="city9" readonly/>
+            </div>
+        </div>
+
+        <div class="col-sm-11">
+            <label for="section"></label>
+            <select class="form-select" name="section" id="section"
+                    field="${section}">
+                <option>
+                    ВЫБЕРИТЕ СЕКЦИЮ*
+                </option>
+                <option th:each="sect : ${sections}"
+                        th:value="${sect.section}"
+                        th:text="${sect.section}">
+                </option>
+            </select>
+        </div>
+        <div class="col-sm-11">
+            <label for="type"></label>
+            <select class="form-select" name="type" id="type"
+                    field="${type}">
+                <option>
+                    ВЫБЕРИТЕ ТИП ДОКЛАДА*
+                </option>
+                <option value="Секционный">Секционное выступление</option>
+                <option value="Постерный">Постерный доклад</option>
+            </select>
+        </div>
+
+        <div class="row justify-content-start mt-2">
+            <div class="col-4">
+                <label> Выберите файл тезисов <10MB (.doc, .docx, .rtf)*</label>
+            </div>
+            <div class="col-7">
+                <div class="custom-file">
+                    <input class="form-control" id="customFile" type="file" name="file"
+                           accept=".doc, .docx, .rtf"/>
+                    <label class="custom-file-label" for="customFile"></label>
+                </div>
+            </div>
+        </div>
+
+        <div class="row justify-content-start">
+            <div class="col-4">
+                <label> Выберите файл разрешения публикации (.pdf)*</label>
+            </div>
+            <div class="col-7">
+                <div class="custom-file">
+                    <input class="form-control" id="permissionFile" type="file"
+                           name="permissionFile" accept=".pdf"/>
+                    <label class="custom-file-label" for="permissionFile"></label>
+                </div>
+            </div>
+        </div>
+
+        <p> * Поля, обязательные к заполнению</p>
+        <div>
+            <div id="fileInfo"></div>
+            <button class="btn btn-primary load" type="submit" id="submitButton">
+                Загрузить
+            </button>
+            <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
+        </div>
+    </form>
+</div>
+
+<script th:inline="javascript">
+    let organization
+    let jsonAffiliationSet = JSON.parse([[${jsonAffiliationSet}]]);
+    let mydata = JSON.parse([[${userCutArray}]])
+    let jsonCurrentUser = JSON.parse([[${jsonCurrentUser}]])
+</script>
+<script src="/static/js/bootstrap.bundle.min.js"></script>
+<script src="/static/js/script.js"></script>
+</body>
+</html>

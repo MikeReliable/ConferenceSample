@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="https://www.thymeleaf.org" lang="en">
+<div th:replace="parts/header :: header"></div>
+
+<body>
+<div th:replace="parts/navbarAdmin :: navbarAdmin"></div>
+<h1 id="list-item-1">h</h1>
+<div class="container-xl my-5">
+    <h3 class="text-center my-3">Список участников без доклада по алфавиту</h3>
+    <form th:unless="${editor}" th:action="@{addUser}">
+        <button type="submit" class="btn btn-outline-success border border-dark my-2"><b>+ Добавить нового участника
+        </b>
+        </button>
+    </form>
+    <div>
+        <table class="table table-bordered">
+            <thead class="table-secondary border border-secondary">
+            <tr>
+                <td>#</td>
+                <td>Фамилия</td>
+                <td>Имя</td>
+                <td>Отчество</td>
+                <td>Степень</td>
+                <td>Должность</td>
+            </tr>
+            </thead>
+            <tbody class="border border-secondary">
+            <tr th:each="user : ${users}" th:object="${user}">
+                <td></td>
+                <td th:text="*{lastName}"></td>
+                <td th:text="*{firstName}"></td>
+                <td th:text="*{middleName}"></td>
+                <td th:text="*{degree}"></td>
+                <td th:text="*{position}"></td>
+                <td>
+                    <a th:unless="${editor}" type="button" class="btn btn-link btn-sm"
+                       th:href="'/admin/adminRedUser/' + *{id}">Edit</a>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+    <div>
+        <h3 class="text-center my-5">Список участников прошлых конференций</h3>
+        <table class="table table-bordered">
+            <thead class="table-secondary border border-secondary">
+            <tr>
+                <td>#</td>
+                <td>Фамилия</td>
+                <td>Имя</td>
+                <td>Отчество</td>
+                <td>Степень</td>
+                <td>Должность</td>
+            </tr>
+            </thead>
+            <tbody class="border border-secondary">
+            <tr th:each="user : ${usersOld}" th:object="${user}">
+                <td></td>
+                <td th:text="*{lastName}"></td>
+                <td th:text="*{firstName}"></td>
+                <td th:text="*{middleName}"></td>
+                <td th:text="*{degree}"></td>
+                <td th:text="*{position}"></td>
+                <td>
+                    <a th:unless="${editor}" type="button" class="btn btn-link btn-sm"
+                       th:href="'/admin/adminRedUser/' + *{id}">Edit</a>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+    <div>
+        <h3 class="text-center my-5">Список неактивных участников</h3>
+        <table class="table table-bordered">
+            <thead class="table-secondary border border-secondary">
+            <tr>
+                <td>#</td>
+                <td>Фамилия</td>
+                <td>Имя</td>
+                <td>Отчество</td>
+                <td>Степень</td>
+                <td>Должность</td>
+            </tr>
+            </thead>
+            <tbody class="border border-secondary">
+            <tr th:each="user : ${usersDis}" th:object="${user}">
+                <td></td>
+                <td th:text="*{lastName}"></td>
+                <td th:text="*{firstName}"></td>
+                <td th:text="*{middleName}"></td>
+                <td th:text="*{degree}"></td>
+                <td th:text="*{position}"></td>
+                <td>
+                    <a th:unless="${editor}" type="button" class="btn btn-link btn-sm"
+                       th:href="'/admin/adminRedUser/' + *{id}">Edit</a>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+    <div>
+        <h3 class="text-center my-5">Список заблокированных участников</h3>
+        <table class="table table-bordered">
+            <thead class="table-secondary border border-secondary">
+            <tr>
+                <td>#</td>
+                <td>Фамилия</td>
+                <td>Имя</td>
+                <td>Отчество</td>
+                <td>Степень</td>
+                <td>Должность</td>
+            </tr>
+            </thead>
+            <tbody class="border border-secondary">
+            <tr th:each="user : ${usersBlocked}" th:object="${user}">
+                <td></td>
+                <td th:text="*{lastName}"></td>
+                <td th:text="*{firstName}"></td>
+                <td th:text="*{middleName}"></td>
+                <td th:text="*{degree}"></td>
+                <td th:text="*{position}"></td>
+                <td>
+                    <a th:unless="${editor}" type="button" class="btn btn-link btn-sm"
+                       th:href="'/admin/adminRedUser/' + *{id}">Edit</a>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+<script src="/static/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

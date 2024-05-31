@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="https://www.thymeleaf.org" lang="en">
+<div th:replace="parts/header :: header"></div>
+
+<body>
+<div th:replace="parts/navbar :: navbar"></div>
+
+<div class="container-xl">
+    <h1>Contacts</h1>
+    <h4 id="contacts-list-item-1" class="my-3">КОНТАКТЫ</h4>
+    <div class="row row-cols-2">
+        <div class="form-group row col-sm-4">
+            <div class="bg-light border border-2 rounded shadow p-3 mb-3 bg-body">
+                <p>Секретарь Конференции:</p>
+                <p class="fw-bolder">Чебодаева Валентина Вадимовна</p>
+                <p>E-mail: <a href="mailto:meso@ispms.ru?subject=Физическая мезомеханика">meso@ispms.ru</a>
+                </p>
+                <p>Телефон: +7 983 598-47-84</p>
+                <!--                <p><b>10-21 июля</b> звонить по номеру:</p>-->
+                <!--                <p>Телефон: +7 923 444-15-40</p>-->
+            </div>
+            <div class="bg-light border border-2 rounded shadow p-3 mb-3 bg-body">
+                <p>Вопросы по договорам и оргвзносу:</p>
+                <p class="fw-bolder">Биргкаем Анна Андреевна</p>
+                <p>E-mail: <a href="mailto:annabirgkaem@ispms.ru?subject=Физическая мезомеханика Оргвзнос">annabirgkaem@ispms.ru</a>
+                </p>
+                <p>Телефон: +7 913 104-85-10</p>
+            </div>
+            <div class="bg-light border border-2 rounded shadow p-3 mb-3 bg-body">
+                <p>Адрес для переписки:</p>
+                <p>634055, г. Томск, пр-кт. Академический, 2/4</br>
+                    <a href="http://www.ispms.ru/ru/contacts/" target="_blank">ИФПМ СО РАН</a></br>
+                Чебодаева Валентина Вадимовна</br>
+                E-mail: <a href="mailto:meso@ispms.ru?subject=Физическая мезомеханика">meso@ispms.ru</a>
+                </p>
+            </div>
+            <div>
+                <img class="me-4" src="/img/WhatsApp.png" width="95px" height="95px" alt="whatsApp">
+                <img class="me-4" src="/img/Telegram.png" width="95px" height="95px" alt="whatsApp">
+                <a class="navbar-brand-fluid mx-2" href="https://vk.com/physicalmesomechanics" target="_blank">
+                    <img src="/static/VK_logo.svg" alt="vk_group" width="65" height="65">
+                </a>
+                <!--                <a class="navbar-brand-fluid" href="https://t.me/phys_meso_conf" target="_blank">-->
+                <!--                    <img src="/static/telegram.svg" alt="telegram" width="50" height="50">-->
+                <!--                </a>-->
+            </div>
+        </div>
+        <div class="form-group row col-sm-8">
+            <script type="text/javascript" charset="utf-8" async
+                    src="https://api-maps.yandex.ru/services/constructor/1.0/js/?um=constructor%3Aeadab6997feebd82fac4b972d49c64f1bbd7bf179af84b1f1cab1910e1ba223b&amp;width=600&amp;height=600&amp;lang=ru_RU&amp;scroll=true"></script>
+        </div>
+    </div>
+</div>
+<script src="/static/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="https://www.thymeleaf.org" lang="en">
+<div th:replace="parts/headerScript :: header"></div>
+
+<body>
+<div th:replace="parts/navbarAdmin :: navbarAdmin"></div>
+<h1 id="list-item-1">h</h1>
+<div class="container-xl my-5">
+    <div class="alert alert-success" role="alert" th:if="${messageOk != null}"
+         th:text="${messageOk}"></div>
+    <div class="alert alert-danger" role="alert" th:if="${message != null}"
+         th:text="${message}"></div>
+    <form th:action="@{'/admin/affiliation/'+ ${affiliation.affiliationId}}" th:object="${affiliation}"
+          th:method="post">
+        <h3 class="text-center my-3">Редактировать аффилиацию</h3>
+        <div class="row row-cols-1">
+            <label for="organizationFull" class="col-form-label"> Полное название организации* : </label>
+            <input type="text" name="organizationFull" id="organizationFull"
+                   th:value="${affiliation.organizationFull}"/>
+        </div>
+        <div class="row row-cols-3">
+            <div class="form-group row col-4">
+                <label for="organizationShort" class="col-form-label"> Короткое название организации* : </label>
+                <input type="text" name="organizationShort" id="organizationShort"
+                       th:value="${affiliation.organizationShort}"/>
+            </div>
+            <div class="form-group row col-4 mx-2">
+                <label for="city" class="col-form-label"> Город* : </label>
+                <input type="text" name="city" id="city" th:value="${affiliation.city}"/>
+            </div>
+            <div class="form-group row col-4">
+                <label for="country" class="col-form-label"> Страна* : </label>
+                <input type="text" name="country" id="country"
+                       th:value="${affiliation.country}"/>
+            </div>
+        </div>
+        <div class="py-3"><input class="btn btn-primary" type="submit" value="Сохранить"/></div>
+        <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
+    </form>
+    <a class="btn btn-outline-danger btn-sm" data-bs-toggle="modal"
+       data-bs-target="#deleteModal" role="button" type="submit"
+       th:data-bs-target="${'#affiliationDelete' + affiliation.affiliationId}">
+        Удалить
+    </a>
+    <div th:id="${'affiliationDelete' + affiliation.affiliationId}"
+         class="modal fade" id="deleteModal" tabindex="-1"
+         aria-labelledby="deleteModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <input type="hidden" th:value="${affiliation.affiliationId}"
+                           name="affiliationId"/>
+                    <h5 class="modal-title" th:for="affiliationId"
+                        th:text="${affiliation.organizationFull}"></h5>
+                </div>
+                <div class="modal-body">
+                    Удалить аффилиацию?
+                </div>
+                <div class="modal-footer">
+                    <form th:action="@{'/admin/affiliation/' + ${affiliation.affiliationId} +'/affiliationDelete'}"
+                          method="post"
+                          th:object="${affiliation}">
+                        <input type="hidden" id="affiliationId" name="affiliationId"
+                               th:value="${affiliation.affiliationId}"/>
+                        <input type="hidden" name="${_csrf.parameterName}"
+                               value="${_csrf.token}"/>
+                        <button class="btn btn-danger btn" type="submit">
+                            Удалить
+                        </button>
+                    </form>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Нет</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<script th:inline="javascript">
+    const real_org_data = [[${allOrganizationFull}]];
+    const real_short_data = [[${allOrganizationShort}]];
+    const real_city_data = [[${allCities}]];
+    const real_country_data = [[${allCountries}]];
+    $(document).ready(function () {
+        $("#organizationFull").autocomplete({
+            minLength: 1,
+            source: real_org_data,
+            select: function (e, ui) {
+                return ui.item.value;
+            }
+        });
+
+        $("#organizationShort").autocomplete({
+            minLength: 1,
+            source: real_short_data,
+            select: function (e, ui) {
+                return ui.item.value;
+            }
+        });
+
+        $("#city").autocomplete({
+            minLength: 1,
+            source: real_city_data,
+            select: function (e, ui) {
+                return ui.item.value;
+            }
+        });
+
+        $("#country").autocomplete({
+            minLength: 1,
+            source: real_country_data,
+            select: function (e, ui) {
+                return ui.item.value;
+            }
+        })
+    });
+</script>
+<script src="/static/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
