@@ -1,0 +1,96 @@
+.navbar{
+    background-color: #042747;
+}
+
+nav.navbar .dropdown:hover > .dropdown-menu {
+    display: block;
+}
+
+nav.navbar .dropend:hover > .dropdown-menu {
+    display: block;
+}
+
+.navbar-brand-fluid {
+    color: gray;
+}
+
+/*.list-group-item:hover {*/
+/*    color: #042747;*/
+/*    font-weight: bold*/
+/*}*/
+
+.dropdown-item:hover {
+    color: #042747;
+    font-weight: bold
+}
+
+.navbar-brand-fluid:hover{
+    color: #bdbdbd;
+}
+
+/* Add a green text color and a checkmark when the requirements are right */
+.valid {
+    color: green;
+    font-family: 'Times New Roman', Times, serif; /* Гарнитура текста */
+    font-size: 100%; /* Размер шрифта в процентах */
+}
+
+.valid:before {
+    position: relative;
+    left: 0;
+    content: "✔";
+}
+
+/* Add a red text color and an "x" when the requirements are wrong */
+.invalid {
+    color: red;
+    font-family: 'Times New Roman', Times, serif; /* Гарнитура текста */
+    font-size: 100%; /* Размер шрифта в процентах */
+}
+
+.invalid:before {
+    position: relative;
+    left: 0;
+    content: "✖";
+}
+
+table {
+    counter-reset: rowNumber;
+}
+
+table tbody tr {
+    counter-increment: rowNumber;
+}
+
+table tbody td:first-child:nth-child(n+1):before {
+    content: counter(rowNumber);
+    min-width: 1em;
+    margin-right: 0.5em;
+}
+
+section option{
+    width:50px;
+}
+
+p {
+   text-align: justify;
+}
+
+.block {
+    background-image: url('img/background.png');
+}
+
+.fix-bg {
+    height: 350px;
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    background-position: center center;
+    margin: 20px 0;
+}
+
+.dropright .dropdown-menu {
+    top: 0;
+    left: 100%;
+    margin-top: -1px;
+}
